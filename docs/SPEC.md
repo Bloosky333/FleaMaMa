@@ -31,8 +31,7 @@ Non-goals for v1: online payment, multiple markets/locations, accounting.
 
 | Role | Who | Access |
 |---|---|---|
-| **Organiser (admin)** | The friend + possibly 1–4 helpers | Full back-office, login by email |
-| **Volunteer** ❓ | Helpers on market day | Check-in screen only (mobile) |
+| **Organiser (admin)** | The friend + 1–4 trusted helpers, **all admins** ✅ | Full back-office (incl. market-day check-in), login by email |
 | **Exhibitor** | Private individuals & professionals | Public form + personal **magic link** (no password) ✅ |
 
 UI language: **French only** ✅ (code and data model in English, translations kept in one
@@ -105,6 +104,7 @@ edition:
 - **Priority deadline** ✅ (date after which unclaimed priority offers expire).
 - **Early-bird deadline** ✅ (different price if booked before).
 - Payment deadline (for reminders).
+- Refund / cancellation deadline.
 - Tariff grid (see 4.4).
 - IBAN, payee name, email templates.
 - Opening date of the public phase.
@@ -120,9 +120,10 @@ Price **per spot**, chosen by category and booking date:
 
 - Booking date = date the booking was confirmed (priority confirmation or request
   submission).
+- **Residents pay the normal price** ✅ (no resident tariff).
 - Organiser can always override the amount (free spot for an association, discount…)
   with a reason.
-- ❓ Is there a resident tariff, an association/free tariff, or a price per extra metre?
+- ❓ Is the price per spot identical whatever its length (exceptions are longer/shorter)?
 
 ### 4.5 Booking lifecycle (phased) ✅
 
@@ -139,9 +140,11 @@ Price **per spot**, chosen by category and booking date:
 **Phase 0 — Preparation** (organiser)
 1. Roll over the edition.
 2. App computes **priority candidates** for every spot:
-   - the contact(s) who rented it last edition ✅,
-   - the contact(s) linked as resident of that spot ✅ (address auto-match suggests, the
-     organiser validates ✅).
+   - the contact(s) who rented it last edition ✅ — they are offered **the same spots**
+     (all of them if they had several) and **may confirm fewer**; released spots become
+     free ✅,
+   - the contact(s) linked as resident of that spot ✅ — a resident may claim **every spot
+     facing their house** ✅ (address auto-match suggests, the organiser validates ✅).
 3. Spots with more than one candidate are flagged as **conflicts**; the organiser decides
    who gets the offer ✅ (the app shows all history to help: years attended, paid/no-show
    last year, notes). No automatic rule.
@@ -151,21 +154,28 @@ Price **per spot**, chosen by category and booking date:
 **Phase 1 — Priority window**
 5. App emails each priority holder an **invitation with a magic link** ✅: "Votre
    emplacement n°42 vous est réservé jusqu'au 01/05. Confirmez-le."
-6. Via the link the exhibitor can: confirm (optionally update contact details, ask for an
-   additional adjacent spot), decline, or write a message.
+6. Via the link the exhibitor can: confirm all or only some of the offered spots,
+   update contact details, ask for an additional adjacent spot, decline, or write a
+   message.
 7. On confirmation → booking confirmed, email with **amount + IBAN + structured
    communication** ✅.
 8. At the deadline, unconfirmed offers become **EXPIRED** and their spots become free.
    The organiser can still manually extend an individual offer.
 
 **Phase 2 — Open booking**
-9. Public form (no account): contact details, private/pro, number of spots wanted,
-   preferences (street, near someone, spot numbers they'd like), type of goods ❓.
-10. Requests land in a queue (first come, first served by timestamp). The organiser
-    assigns spots from the map; an **assignment helper** suggests free spots matching the
-    preferences (same street, adjacent spots when several are requested). ❓ Should
-    exhibitors instead pick a free spot themselves on the map?
-11. If nothing fits → waiting list; freed spots can be offered to the next in line.
+9. **Request on the map** ✅: the public page shows the plan with free spots only (no
+   personal data). The exhibitor selects the spot(s) they want as **1st choice**, and can
+   add **2nd / 3rd choices**, then fills in contact details, private/pro (+ VAT number)
+   and a message. A magic link is emailed to follow the request.
+10. **Several people may request the same spot** ✅ — requests are not locked. The
+    organiser sees, per spot, the list of requests (ordered by submission time) and
+    **confirms** one; the others are automatically moved to their next choice, or back to
+    the queue if none is left. A request covering several spots is accepted or refused
+    as a whole (adjacency preserved), unless the organiser edits it.
+11. The organiser can also assign a different spot than requested; the **assignment
+    helper** suggests free spots close to the requested ones (same street, adjacent when
+    several are needed). The exhibitor gets an email to accept the alternative.
+12. If nothing fits → waiting list; freed spots can be offered to the next in line.
 
 **Constraints**
 - One exhibitor may hold **several spots, ideally adjacent; spots are never split or
@@ -180,6 +190,9 @@ Price **per spot**, chosen by category and booking date:
 - Organiser records payments manually (amount, date, method). Partial payments allowed;
   status = unpaid / partial / paid / refunded.
 - Bulk "mark as paid" from a list view.
+- **Cancellation & refund** ✅: each edition has a **refund deadline**. A booking
+  cancelled before it is refundable (organiser records the refund: amount, date, method);
+  after it, cancellation keeps the payment. The organiser can always override.
 - v1.1 idea: import a bank CSV/CODA export and auto-match on the structured
   communication.
 
@@ -203,8 +216,9 @@ All sent emails are logged on the contact (date, template, status).
 - **Walk-ins**: assign a free spot to someone turning up, create the contact on the fly,
   collect cash.
 - **Printable PDFs**: map with spot numbers and names, list per street (spot, name,
-  phone, paid?), for volunteers without a phone.
-- ❓ Offline support needed (bad mobile reception on the street)?
+  phone, paid?), for helpers without a phone.
+- Mobile reception is fine on site ✅ → online-only, no offline mode.
+- No placement rules by type of goods ✅.
 
 ### 4.9 Dashboard & exports
 
@@ -245,7 +259,7 @@ rows fit on screen, gives the best photos (straight, no glare).
 
 ```
 Edition      (id, year, market_date, priority_deadline, early_bird_deadline,
-              payment_deadline, public_opening_date, iban, payee, status)
+              payment_deadline, refund_deadline, public_opening_date, iban, payee, status)
 Plan         (id, image_url, width, height, scale_m_per_px?)
 Spot         (id, plan_id, label, sort_key, street, side, length_m, shape (polygon json),
               facing_addresses[], notes, active)
@@ -258,11 +272,11 @@ Tariff       (id, edition_id, kind[private|pro], early_bird bool, price_per_spot
 Booking      (id, edition_id, contact_id, status, source[priority|request|walk_in|history],
               priority_reason[last_year|resident|manual], tariff_id, amount_due,
               amount_override_reason, structured_comm, offer_expires_at,
-              requested_at, confirmed_at, preferences json, presence, notes,
-              import_batch_id)
+              requested_at, confirmed_at, presence, notes, import_batch_id)
 BookingSpot  (booking_id, spot_id)            -- unique (edition_id, spot_id) when active
-Payment      (id, booking_id, amount, method[cash|transfer], paid_at, reference,
-              recorded_by)
+SpotRequest  (id, booking_id, choice_rank[1|2|3], spot_ids[], status)  -- Phase 2 choices
+Payment      (id, booking_id, amount (negative = refund), method[cash|transfer],
+              paid_at, reference, recorded_by)
 MagicLink    (token_hash, contact_id, booking_id, expires_at)
 EmailLog     (id, contact_id, booking_id, template, sent_at, status)
 ImportBatch  (id, created_at, source[photo|manual|csv], status)
@@ -309,14 +323,14 @@ access) or mitigated by a small cron ping; to confirm.
 6. Emails: invitation, confirmation + payment instructions, reminders.
 
 **v1**
-7. Public request form + assignment helper + waiting list (Phase 2).
+7. Public "request on the map" with 1st/2nd/3rd choices, arbitration screen,
+   assignment helper, waiting list (Phase 2).
 8. Market-day check-in, walk-ins, printable PDFs.
 9. Dashboard, exports.
 
 **Later**
 - Bank statement import & auto-matching; online payment (Payconiq/Stripe).
 - Dutch/English UI.
-- Self-service spot picking on the map.
 
 ## 9. Key screens
 
@@ -325,12 +339,13 @@ access) or mitigated by a small cron ping; to confirm.
 3. **Exposants** — searchable list, contact page with history.
 4. **Réservations** — list per edition with status/payment filters, bulk actions.
 5. **Priorités** — candidate per spot, conflicts to resolve, "send invitations".
-6. **Demandes** — Phase 2 queue with assignment helper.
+6. **Demandes** — Phase 2 requests per spot (competing requests), confirm/redirect,
+   assignment helper.
 7. **Paiements** — record & reconcile.
 8. **Jour J** — mobile check-in.
 9. **Import** — photos/grid/review.
 10. **Paramètres** — edition dates, tariffs, IBAN, email templates, users.
-11. **Public**: request form; personal booking page (magic link).
+11. **Public**: map with free spots + request form; personal booking page (magic link).
 
 ## 10. Assumptions
 
@@ -360,31 +375,28 @@ access) or mitigated by a small cron ping; to confirm.
 | D13 | Market day: mobile check-in, PDFs, walk-ins | Q&A 5 |
 | D14 | Unpaid/no-show doesn't auto-remove priority | Q&A 5 |
 | D15 | Exhibitor access by magic link; several (non-split) spots per exhibitor | Q&A 6 |
+| D16 | Phase 2: exhibitors request spots on the map (1st/2nd/3rd choice), organiser confirms; competing requests allowed | Q&A 7, 8 |
+| D17 | Renewal: same spots offered, exhibitor may confirm fewer | Q&A 7 |
+| D18 | Residents may claim all spots facing their house, at normal price | Q&A 7 |
+| D19 | Online-only market-day check-in | Q&A 7 |
+| D20 | Refunds allowed before a per-edition deadline | Q&A 8 |
+| D21 | All organisers are admins (no volunteer role) | Q&A 8 |
+| D22 | No placement rules by type of goods | Q&A 8 |
 
 ## 12. Open questions
 
-1. **Phase 2**: organiser assigns from requests (current assumption) or exhibitors pick a
-   free spot on the map themselves?
-2. **Tariffs**: resident tariff? association/free? any per-metre price for longer spots?
-   Is the price per spot identical whatever its length?
-3. **Residents**: does a resident get the spot in front of their house *for free* or for
-   themselves only (can they hand it to a relative)? Can a resident claim several spots
-   (whole house front)?
-4. **Last-year priority**: same exhibitor *and same spot* only, or "a spot" (organiser may
-   move them)? If someone had 3 spots, do they keep all 3?
-5. **Volunteers**: separate limited role needed, or everybody is admin?
-6. **Market day connectivity**: is mobile reception reliable on the streets, or is offline
-   check-in needed?
-7. **Type of goods** (food, pro, second-hand…): needed for placement rules (e.g. food
-   stands only on the square)?
-8. **Cancellations & refunds**: policy? Refund after a deadline? Keep the money if no-show?
-9. **Rain / cancelled market**: what happens to bookings and payments?
-10. **Data retention**: how many years of contacts/history to keep (GDPR)?
-11. **Email sender**: send from a domain the friend owns (better deliverability) or a
-    generic one?
-12. **Tech stack** in §6: OK? Any preference (e.g. the friend's existing Google account /
-    Google Sheets as backup)?
-13. **Plan image**: does a usable plan exist (municipal plan, hand drawing), or will we
-    start from a satellite screenshot?
-14. Is the **structured communication** for transfers OK for the friend's bank account
-    (personal vs association account)?
+1. **Tariffs**: association / free category? Is the price per spot the same whatever
+   its length (some spots are longer/shorter)?
+2. **Residents**: can a resident's spot be booked in someone else's name (relative,
+   friend)? Does the resident priority survive if they didn't use it last year?
+3. **Rain / cancelled market**: what happens to bookings and payments?
+4. **Data retention**: how many years of contacts/history to keep (GDPR)?
+5. **Email sender**: send from a domain the friend owns (better deliverability) or a
+   generic one?
+6. **Tech stack** in §6: OK? Any preference?
+7. **Plan image**: does a usable plan exist (municipal plan, hand drawing), or will we
+   start from a satellite screenshot?
+8. **Bank account**: association or personal account? Is the Belgian structured
+   communication OK for it?
+9. **Phase 2 visibility**: should the public map show that a free spot already has
+   pending requests ("2 demandes en cours"), or hide it?
