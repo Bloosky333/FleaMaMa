@@ -53,8 +53,9 @@ file so Dutch/English can be added later).
 
 ### 4.1 Plan & spots (map)
 
-- ✅ The organiser **uploads a plan image** (scanned plan, PDF converted to image, or a
-  satellite screenshot) as the map background. No dependency on Google Maps.
+- ✅ The organiser **uploads a plan image** as the map background. A **paper plan**
+  exists ✅: it is scanned or photographed and uploaded (the upload screen offers
+  crop/rotate so a phone photo works). No dependency on Google Maps.
 - Spots are drawn on top of the image as **rotatable rectangles** (or polygons), in image
   coordinates.
 - **Bulk tool**: draw a line along a street side, enter "N spots of 3 m starting at
@@ -106,7 +107,8 @@ edition:
 - Payment deadline (for reminders).
 - Refund / cancellation deadline.
 - Tariff grid (see 4.4).
-- IBAN, payee name, email templates.
+- Payment instructions text (free text for now, e.g. "à régler en liquide ou par
+  virement"), email templates. Bank details (IBAN) are optional and not required for v1 ✅.
 - Opening date of the public phase.
 
 ### 4.4 Tariffs ✅
@@ -121,9 +123,10 @@ Price **per spot**, chosen by category and booking date:
 - Booking date = date the booking was confirmed (priority confirmation or request
   submission).
 - **Residents pay the normal price** ✅ (no resident tariff).
-- Organiser can always override the amount (free spot for an association, discount…)
-  with a reason.
-- ❓ Is the price per spot identical whatever its length (exceptions are longer/shorter)?
+- **No association / free category** ✅.
+- **Same price per spot whatever its length** ✅ (longer/shorter exceptions don't change
+  the price).
+- Organiser can always override the amount (discount, free spot…) with a reason.
 
 ### 4.5 Booking lifecycle (phased) ✅
 
@@ -145,6 +148,9 @@ Price **per spot**, chosen by category and booking date:
      free ✅,
    - the contact(s) linked as resident of that spot ✅ — a resident may claim **every spot
      facing their house** ✅ (address auto-match suggests, the organiser validates ✅).
+     Resident priority is **permanent**: it applies every year, even if they didn't book
+     last year ✅. The booking must be **in the resident's own name** — it cannot be
+     handed to a relative or friend ✅.
 3. Spots with more than one candidate are flagged as **conflicts**; the organiser decides
    who gets the offer ✅ (the app shows all history to help: years attended, paid/no-show
    last year, notes). No automatic rule.
@@ -157,14 +163,15 @@ Price **per spot**, chosen by category and booking date:
 6. Via the link the exhibitor can: confirm all or only some of the offered spots,
    update contact details, ask for an additional adjacent spot, decline, or write a
    message.
-7. On confirmation → booking confirmed, email with **amount + IBAN + structured
-   communication** ✅.
+7. On confirmation → booking confirmed, email with **amount, booking reference and
+   payment instructions** ✅.
 8. At the deadline, unconfirmed offers become **EXPIRED** and their spots become free.
    The organiser can still manually extend an individual offer.
 
 **Phase 2 — Open booking**
-9. **Request on the map** ✅: the public page shows the plan with free spots only (no
-   personal data). The exhibitor selects the spot(s) they want as **1st choice**, and can
+9. **Request on the map** ✅: the public page shows the plan with free spots (no
+   personal data); a free spot that already has pending requests shows it
+   ("2 demandes en cours") ✅. The exhibitor selects the spot(s) they want as **1st choice**, and can
    add **2nd / 3rd choices**, then fills in contact details, private/pro (+ VAT number)
    and a message. A magic link is emailed to follow the request.
 10. **Several people may request the same spot** ✅ — requests are not locked. The
@@ -185,16 +192,18 @@ Price **per spot**, chosen by category and booking date:
 ### 4.6 Payments ✅ (manual in v1)
 
 - Methods: **bank transfer** and **cash** (on the day or before).
-- Each booking gets a unique **Belgian structured communication**
-  (`+++123/4567/89012+++`) so transfers are easy to match.
+- Each booking gets a short unique **reference** (e.g. `B2027-042`) to put in the
+  transfer communication. Belgian structured communication (`+++123/4567/89012+++`) and
+  IBAN handling are deferred ✅ (account likely belongs to the association).
 - Organiser records payments manually (amount, date, method). Partial payments allowed;
   status = unpaid / partial / paid / refunded.
 - Bulk "mark as paid" from a list view.
 - **Cancellation & refund** ✅: each edition has a **refund deadline**. A booking
   cancelled before it is refundable (organiser records the refund: amount, date, method);
   after it, cancellation keeps the payment. The organiser can always override.
-- v1.1 idea: import a bank CSV/CODA export and auto-match on the structured
-  communication.
+- **Rain / bad weather**: nothing special ✅ — bookings and payments stay as they are, no
+  automatic refund.
+- Later: import a bank CSV/CODA export and auto-match on the booking reference.
 
 ### 4.7 Emails ✅
 
@@ -202,12 +211,17 @@ Templated, editable in French, sent from the app:
 
 1. **Priority invitation** (Phase 1) with magic link and deadline.
 2. **Reminder** before the priority deadline (configurable, e.g. 7 days before).
-3. **Booking confirmation + payment instructions** (amount, IBAN, structured comm.).
+3. **Booking confirmation + payment instructions** (amount, reference, instructions text).
 4. **Unpaid reminder** before the payment deadline.
 5. Request received / request accepted / waitlisted (Phase 2).
 6. Optional "practical info" mailing a few days before the market (arrival time, map).
 
 All sent emails are logged on the contact (date, template, status).
+
+Sending: through the organiser's **Gmail account via SMTP** ✅ (Google app password,
+2-step verification required). Gmail limit is ~500 recipients/day, enough for 400
+spots; bulk sends (invitations) are throttled and queued. Replies land directly in the
+organiser's Gmail.
 
 ### 4.8 Market day ✅
 
@@ -259,7 +273,8 @@ rows fit on screen, gives the best photos (straight, no glare).
 
 ```
 Edition      (id, year, market_date, priority_deadline, early_bird_deadline,
-              payment_deadline, refund_deadline, public_opening_date, iban, payee, status)
+              payment_deadline, refund_deadline, public_opening_date,
+              payment_instructions, iban?, status)
 Plan         (id, image_url, width, height, scale_m_per_px?)
 Spot         (id, plan_id, label, sort_key, street, side, length_m, shape (polygon json),
               facing_addresses[], notes, active)
@@ -271,7 +286,7 @@ ResidentLink (contact_id, spot_id, validated_by, validated_at)
 Tariff       (id, edition_id, kind[private|pro], early_bird bool, price_per_spot)
 Booking      (id, edition_id, contact_id, status, source[priority|request|walk_in|history],
               priority_reason[last_year|resident|manual], tariff_id, amount_due,
-              amount_override_reason, structured_comm, offer_expires_at,
+              amount_override_reason, reference, offer_expires_at,
               requested_at, confirmed_at, presence, notes, import_batch_id)
 BookingSpot  (booking_id, spot_id)            -- unique (edition_id, spot_id) when active
 SpotRequest  (id, booking_id, choice_rank[1|2|3], spot_ids[], status)  -- Phase 2 choices
@@ -293,7 +308,7 @@ Constraint: free / near-free cloud hosting ✅, public pages for exhibitors.
 | Hosting | **Vercel** free tier | Zero ops |
 | DB / auth / files | **Supabase** (Postgres, email magic-link auth, storage for plan & photos) | Free tier is plenty for 400 spots; real SQL; easy backups |
 | Map editor | SVG/Canvas over the plan image (**react-konva**) | Rotatable rectangles, zoom/pan, works on mobile |
-| Emails | **Resend** or **Brevo** free tier | ~100–300 emails/day free, good deliverability |
+| Emails | **Gmail SMTP** (nodemailer) ✅ | Organiser already uses Gmail; free; replies arrive in his inbox |
 | AI extraction | Claude vision API, called server-side only from the import screen | Only used once a year, a few cents per batch |
 | PDF | Server-side render (e.g. `@react-pdf/renderer`) | Printable map & lists |
 | UI | Tailwind + shadcn/ui, mobile-first for check-in | |
@@ -304,8 +319,8 @@ access) or mitigated by a small cron ping; to confirm.
 ## 7. Non-functional requirements
 
 - **GDPR**: personal data of private individuals; privacy notice on the public form,
-  consent checkbox, ability to export/delete a contact, data kept only as long as needed
-  (❓ retention period). EU region hosting.
+  consent checkbox, ability to export/delete a contact. **No retention limit for now** ✅
+  (to revisit). EU region hosting.
 - **Usability**: organiser is not technical → plain French, few clicks, undo where
   possible, everything editable by hand.
 - **Mobile**: check-in and exhibitor pages must work well on phones.
@@ -344,7 +359,8 @@ access) or mitigated by a small cron ping; to confirm.
 7. **Paiements** — record & reconcile.
 8. **Jour J** — mobile check-in.
 9. **Import** — photos/grid/review.
-10. **Paramètres** — edition dates, tariffs, IBAN, email templates, users.
+10. **Paramètres** — edition dates, tariffs, payment instructions, email templates,
+    Gmail settings, users.
 11. **Public**: map with free spots + request form; personal booking page (magic link).
 
 ## 10. Assumptions
@@ -382,21 +398,20 @@ access) or mitigated by a small cron ping; to confirm.
 | D20 | Refunds allowed before a per-edition deadline | Q&A 8 |
 | D21 | All organisers are admins (no volunteer role) | Q&A 8 |
 | D22 | No placement rules by type of goods | Q&A 8 |
+| D23 | No association tariff; price per spot independent of length | Q&A 9 |
+| D24 | Resident priority is permanent; booking only in the resident's name | Q&A 9 |
+| D25 | Rain: no special handling, bookings and payments unchanged | Q&A 9 |
+| D26 | No data retention limit for now | Q&A 9 |
+| D27 | Emails via the organiser's Gmail (SMTP) | Q&A 9 |
+| D28 | Paper plan exists → scanned/photographed and uploaded | Q&A 9 |
+| D29 | Bank details & structured communication deferred; simple booking reference | Q&A 9 |
+| D30 | Public map shows pending request count on free spots | Q&A 9 |
 
 ## 12. Open questions
 
-1. **Tariffs**: association / free category? Is the price per spot the same whatever
-   its length (some spots are longer/shorter)?
-2. **Residents**: can a resident's spot be booked in someone else's name (relative,
-   friend)? Does the resident priority survive if they didn't use it last year?
-3. **Rain / cancelled market**: what happens to bookings and payments?
-4. **Data retention**: how many years of contacts/history to keep (GDPR)?
-5. **Email sender**: send from a domain the friend owns (better deliverability) or a
-   generic one?
-6. **Tech stack** in §6: OK? Any preference?
-7. **Plan image**: does a usable plan exist (municipal plan, hand drawing), or will we
-   start from a satellite screenshot?
-8. **Bank account**: association or personal account? Is the Belgian structured
-   communication OK for it?
-9. **Phase 2 visibility**: should the public map show that a free spot already has
-   pending requests ("2 demandes en cours"), or hide it?
+1. **Tech stack** (§6): approve or adjust.
+2. **Paper plan**: roughly what size/scale? Are spot numbers already written on it (we
+   could use the scan directly and just click spots)?
+3. **Resident claim**: is the organiser OK with residents being invited automatically
+   every year (Phase 1 email), or should residents contact him themselves?
+4. **Early-bird date vs priority deadline**: are they the same date in practice?
