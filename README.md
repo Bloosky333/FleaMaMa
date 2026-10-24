@@ -22,8 +22,21 @@ taken/free spots. Replaces an old FileMaker database.
 - Full database schema for the next milestones (editions, tariffs, bookings, payments,
   magic links, email outbox, import batches).
 
-**Next**: history import (manual grid + photo/AI), editions & tariffs, priorities and invitations,
-Gmail outbox, map with booking status, public request page, market-day tools.
+**Milestone 2 (done)** — history import (*Reprise historique*):
+
+- One "reprise" per year; rows are kept as a draft and **saved automatically**.
+- Spreadsheet-like grid: type with the keyboard (Enter = next line), or **paste rows from Excel /
+  Google Sheets / CSV**.
+- **Photos of the FileMaker screen** are read by Claude (vision + structured output); unsure cells
+  are highlighted in yellow and the photo is shown next to the rows it produced.
+- Live checks: unknown spot numbers, a spot used twice, a spot already taken that year, missing name.
+- Existing exhibitors are recognised (same phone/email, or name + address) and linked instead of
+  duplicated; the organiser can override per line or ignore a line.
+- **Validate** creates the contacts and the year's bookings (with the paid flag);
+  **Annuler l’import** undoes it cleanly so it can be corrected and validated again.
+
+**Next**: editions & tariffs, priorities and invitations, Gmail outbox, map with booking status,
+public request page, market-day tools.
 
 ## Tech
 
@@ -63,6 +76,8 @@ Useful scripts:
    environment variables:
    - `DATABASE_URL` — the pooler URI above
    - `SESSION_SECRET` — a long random string (`openssl rand -base64 32`)
+   - `ANTHROPIC_API_KEY` — optional, enables reading photos of the old software
+     ([console.anthropic.com](https://console.anthropic.com); a few cents per photo)
 4. Open the Vercel URL: the first visit asks to create the first organiser account.
 
 Note: free Supabase projects pause after a week without activity; opening the app wakes them up

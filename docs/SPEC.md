@@ -368,6 +368,12 @@ portable and simple:
   email magic links for 1–5 people and works before Gmail sending is configured.
   Magic links remain the plan for **exhibitors**.
 - UI built with hand-written Tailwind components (no shadcn generator needed).
+- History import (milestone 2): photos are read with Claude (`claude-opus-5-5`, vision +
+  structured output, server-side fallback on refusal). Extracted rows are never saved
+  directly: they land in the review grid and are only written as contacts/bookings when
+  the organiser validates. A validated import can be undone (bookings removed, contacts
+  it created removed unless used elsewhere). Historical bookings use status `historical`
+  with the old system's paid flag kept as information.
 
 ## 7. Non-functional requirements
 

@@ -8,10 +8,11 @@ const items = [
   { href: "/admin/plan", label: "Plan" },
   { href: "/admin/emplacements", label: "Emplacements" },
   { href: "/admin/exposants", label: "Exposants" },
+  { href: "/admin/import", label: "Reprise historique" },
   { href: "/admin/organisateurs", label: "Organisateurs" },
 ];
 
-const upcoming = ["Réservations", "Reprise historique", "Priorités", "Paiements", "Emails", "Paramètres"];
+const upcoming = ["Réservations", "Priorités", "Paiements", "Emails", "Paramètres"];
 
 export function AdminNav() {
   const pathname = usePathname();

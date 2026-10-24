@@ -137,11 +137,47 @@ export const tariffs = pgTable("tariffs", {
 
 export const importBatches = pgTable("import_batches", {
   id: serial("id").primaryKey(),
+  /** Year of the market the imported history belongs to. */
+  year: integer("year").notNull(),
   source: text("source").notNull(), // photo | manual | csv
-  status: text("status").notNull().default("draft"),
+  status: text("status").notNull().default("draft"), // draft | committed
   note: text("note").notNull().default(""),
+  committedAt: timestamp("committed_at", { withTimezone: true }),
   createdAt: createdAt(),
 });
+
+/** Photo of an old FileMaker screen, read by the AI extraction. */
+export const importPhotos = pgTable("import_photos", {
+  id: serial("id").primaryKey(),
+  batchId: integer("batch_id")
+    .notNull()
+    .references(() => importBatches.id, { onDelete: "cascade" }),
+  mime: text("mime").notNull(),
+  data: bytea("data").notNull(),
+  status: text("status").notNull().default("pending"), // pending | extracted | failed
+  error: text("error"),
+  createdAt: createdAt(),
+});
+
+/** One line of the review grid, kept as entered until the batch is committed. */
+export const importRows = pgTable(
+  "import_rows",
+  {
+    id: serial("id").primaryKey(),
+    batchId: integer("batch_id")
+      .notNull()
+      .references(() => importBatches.id, { onDelete: "cascade" }),
+    position: integer("position").notNull(),
+    data: jsonb("data").$type<Record<string, string>>().notNull(),
+    /** Fields the AI was unsure about. */
+    uncertain: text("uncertain").array().notNull().default(sql`'{}'::text[]`),
+    photoId: integer("photo_id").references(() => importPhotos.id, { onDelete: "set null" }),
+    /** auto | new | existing | skip */
+    action: text("action").notNull().default("auto"),
+    matchContactId: integer("match_contact_id"),
+  },
+  (t) => [index("import_rows_batch_idx").on(t.batchId, t.position)],
+);
 
 export const contacts = pgTable(
   "contacts",
