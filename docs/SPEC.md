@@ -356,6 +356,19 @@ Constraint: free / near-free cloud hosting ✅, public pages for exhibitors.
 Note: Supabase free projects pause after a week of inactivity — acceptable (wakes on
 access) or mitigated by a small cron ping; to confirm.
 
+**Implementation notes (milestone 1)** — choices made while building, to keep the app
+portable and simple:
+
+- The database is accessed with **Drizzle ORM** over a plain Postgres connection
+  (`DATABASE_URL`). Supabase is used *only* as a managed Postgres; any Postgres works,
+  so the data is never locked into one provider.
+- The **plan image is stored in the database** (a single A4 scan, a few MB) rather than
+  in a separate file storage — one less service to configure, included in DB backups.
+- **Organisers log in with email + password** (signed session cookie). Simpler than
+  email magic links for 1–5 people and works before Gmail sending is configured.
+  Magic links remain the plan for **exhibitors**.
+- UI built with hand-written Tailwind components (no shadcn generator needed).
+
 ## 7. Non-functional requirements
 
 - **GDPR**: personal data of private individuals; privacy notice on the public form,
