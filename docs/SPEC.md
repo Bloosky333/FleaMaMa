@@ -1,10 +1,10 @@
-# FleaMaMa — Functional & Technical Specification (v0.1 draft)
+# FleaMaMa — Functional & Technical Specification (v0.2)
 
 > Flea Market Manager: replaces an old FileMaker database used to manage the rental of
 > spots (emplacements) at a yearly brocante.
 
-Status: **draft, under discussion**. Decisions marked ✅ come from the first Q&A session;
-items marked ❓ are still open (see [§12 Open questions](#12-open-questions)).
+Status: **v0.2 — ready for MVP**. Decisions marked ✅ come from the Q&A sessions
+(see [§11 Decisions log](#11-decisions-log)).
 
 ---
 
@@ -53,14 +53,23 @@ file so Dutch/English can be added later).
 
 ### 4.1 Plan & spots (map)
 
-- ✅ The organiser **uploads a plan image** as the map background. A **paper plan**
-  exists ✅: it is scanned or photographed and uploaded (the upload screen offers
-  crop/rotate so a phone photo works). No dependency on Google Maps.
+- ✅ The organiser **uploads a plan image** as the map background. The existing plan is
+  an **A4 hand-drawn sheet with the spot numbers written on it** ✅: it is scanned or
+  photographed and uploaded (the upload screen offers crop/rotate/contrast so a phone
+  photo works). No dependency on Google Maps.
+- Because the plan is hand-drawn (not to scale), the drawn shape is **only a visual
+  marker**; the real spot length is a data field, not computed from the drawing.
 - Spots are drawn on top of the image as **rotatable rectangles** (or polygons), in image
-  coordinates.
-- **Bulk tool**: draw a line along a street side, enter "N spots of 3 m starting at
-  number X", the app generates N contiguous rectangles numbered automatically. Then tweak
+  coordinates. Since the numbers are already on the plan, the fastest way is the
+  **"click the numbers" tool**: type/confirm a number, click where it sits on the plan,
+  a default-size rectangle is placed there, adjust if needed, next number auto-increments.
+- **Bulk tool**: draw a line along a street side, enter "N spots starting at number X",
+  the app generates N contiguous rectangles numbered automatically. Then tweak
   exceptions (different length, skipped numbers, `12bis`, etc.).
+- A4 hand drawing will be small on screen for 100–400 spots: the map supports zoom/pan,
+  and labels are rendered by the app on top of the scan (readable at any zoom).
+- Nice-to-have: AI detection of the handwritten numbers on the scan to pre-place spots,
+  which the organiser then validates.
 - Each spot has: number/label, street, side, **length (m)** (default = standard size, many
   exceptions ✅), facing address(es) (for residents), notes (e.g. "devant garage, accès à
   laisser"), active/inactive.
@@ -103,7 +112,8 @@ edition:
 
 - Market date(s).
 - **Priority deadline** ✅ (date after which unclaimed priority offers expire).
-- **Early-bird deadline** ✅ (different price if booked before).
+- **Early-bird deadline** ✅ (different price if booked before) — **independent from
+  the priority deadline** ✅ (probably a different date).
 - Payment deadline (for reminders).
 - Refund / cancellation deadline.
 - Tariff grid (see 4.4).
@@ -158,8 +168,11 @@ Price **per spot**, chosen by category and booking date:
    as a warning, the organiser judges.
 
 **Phase 1 — Priority window**
-5. App emails each priority holder an **invitation with a magic link** ✅: "Votre
-   emplacement n°42 vous est réservé jusqu'au 01/05. Confirmez-le."
+5. **When the organiser decides** ✅ (button "Envoyer les invitations", nothing automatic),
+   the app emails each priority holder (renewals and residents) an **invitation with a
+   magic link** ✅: "Votre emplacement n°42 vous est réservé jusqu'au 01/05.
+   Confirmez-le." He can send all at once, a selection (e.g. one street), or re-send to
+   those who haven't answered. Sending goes through the batch queue (§4.7).
 6. Via the link the exhibitor can: confirm all or only some of the offered spots,
    update contact details, ask for an additional adjacent spot, decline, or write a
    message.
@@ -209,19 +222,44 @@ Price **per spot**, chosen by category and booking date:
 
 Templated, editable in French, sent from the app:
 
-1. **Priority invitation** (Phase 1) with magic link and deadline.
-2. **Reminder** before the priority deadline (configurable, e.g. 7 days before).
-3. **Booking confirmation + payment instructions** (amount, reference, instructions text).
-4. **Unpaid reminder** before the payment deadline.
-5. Request received / request accepted / waitlisted (Phase 2).
-6. Optional "practical info" mailing a few days before the market (arrival time, map).
+| # | Email | Trigger |
+|---|---|---|
+| 1 | **Priority invitation** (Phase 1) with magic link and deadline | Organiser, bulk |
+| 2 | **Reminder** of the priority deadline (to those who haven't answered) | Organiser, bulk |
+| 3 | **Booking confirmation + payment instructions** (amount, reference, instructions) | Automatic, single |
+| 4 | **Unpaid reminder** | Organiser, bulk |
+| 5 | Request received / accepted / alternative proposed / waitlisted (Phase 2) | Automatic, single |
+| 6 | "Practical info" mailing before the market (arrival time, map) | Organiser, bulk |
 
-All sent emails are logged on the contact (date, template, status).
+Rule: **bulk emails are never sent automatically** ✅ — the organiser chooses when, and
+to whom (the app pre-selects the relevant recipients, e.g. "14 offres non confirmées").
+Only single transactional emails caused by an exhibitor's or organiser's action (#3, #5)
+go out on their own. All sent emails are logged on the contact (date, template, status).
 
-Sending: through the organiser's **Gmail account via SMTP** ✅ (Google app password,
-2-step verification required). Gmail limit is ~500 recipients/day, enough for 400
-spots; bulk sends (invitations) are throttled and queued. Replies land directly in the
-organiser's Gmail.
+**Sending via Gmail with batching** ✅
+
+- Through the organiser's **Gmail account via SMTP** (Google app password, 2-step
+  verification required). Replies land directly in his Gmail.
+- Gmail limits (personal account): ~**500 recipients per rolling 24 h**, and bursts can
+  trigger temporary blocks. So every email goes through an **outbox queue**:
+  - one recipient per email (personalised, no CC/BCC lists);
+  - sent in **small batches** (default: 20 emails, then a pause of a few minutes;
+    configurable);
+  - a **daily cap** below Gmail's limit (default **300/24 h**) to leave room for the
+    organiser's own emails and the single transactional emails;
+  - when the cap is reached, the rest waits and resumes automatically when quota frees
+    up (rolling 24 h count);
+  - transactional emails (#3, #5) get **priority** over bulk ones in the queue;
+  - a Gmail error (quota, temporary block) **pauses** the queue and alerts the organiser;
+    failed emails are retried a limited number of times, then flagged.
+- **Outbox screen**: queued / sent / failed per campaign, progress ("212 / 380 envoyés,
+  suite estimée demain 10h"), pause / resume / cancel, re-send failed.
+- Before a big send the app shows the estimate ("380 emails ≈ 2 jours avec la limite
+  actuelle").
+- The queue is processed by a scheduled job (e.g. every few minutes), not by the
+  organiser's browser, so he can close the app.
+- If Gmail becomes too limiting, the sending layer can be switched to a transactional
+  service (Brevo/Resend) without changing the rest of the app.
 
 ### 4.8 Market day ✅
 
@@ -293,12 +331,14 @@ SpotRequest  (id, booking_id, choice_rank[1|2|3], spot_ids[], status)  -- Phase 
 Payment      (id, booking_id, amount (negative = refund), method[cash|transfer],
               paid_at, reference, recorded_by)
 MagicLink    (token_hash, contact_id, booking_id, expires_at)
-EmailLog     (id, contact_id, booking_id, template, sent_at, status)
+EmailCampaign(id, edition_id, template, created_by, created_at, status[running|paused|done])
+EmailOutbox  (id, campaign_id?, contact_id, booking_id, template, priority, status
+              [queued|sending|sent|failed], attempts, last_error, scheduled_at, sent_at)
 ImportBatch  (id, created_at, source[photo|manual|csv], status)
 AuditLog     (who, when, entity, change)
 ```
 
-## 6. Technical proposal ❓ (to validate)
+## 6. Technical stack ✅
 
 Constraint: free / near-free cloud hosting ✅, public pages for exhibitors.
 
@@ -308,7 +348,7 @@ Constraint: free / near-free cloud hosting ✅, public pages for exhibitors.
 | Hosting | **Vercel** free tier | Zero ops |
 | DB / auth / files | **Supabase** (Postgres, email magic-link auth, storage for plan & photos) | Free tier is plenty for 400 spots; real SQL; easy backups |
 | Map editor | SVG/Canvas over the plan image (**react-konva**) | Rotatable rectangles, zoom/pan, works on mobile |
-| Emails | **Gmail SMTP** (nodemailer) ✅ | Organiser already uses Gmail; free; replies arrive in his inbox |
+| Emails | **Gmail SMTP** (nodemailer) + outbox table + scheduled job (Vercel/Supabase cron) ✅ | Organiser already uses Gmail; free; batching respects Gmail limits |
 | AI extraction | Claude vision API, called server-side only from the import screen | Only used once a year, a few cents per batch |
 | PDF | Server-side render (e.g. `@react-pdf/renderer`) | Printable map & lists |
 | UI | Tailwind + shadcn/ui, mobile-first for check-in | |
@@ -330,7 +370,7 @@ access) or mitigated by a small cron ping; to confirm.
 ## 8. MVP scope & roadmap (proposal)
 
 **MVP (needed before next season's priority phase)**
-1. Plan upload + spot editor (bulk tool).
+1. Plan upload + spot editor ("click the numbers" + bulk tool).
 2. Contacts + bookings + manual payments.
 3. History import (manual grid first, AI photo extraction right after).
 4. Priority computation, conflicts screen, Phase 1 invitations with magic links.
@@ -406,12 +446,12 @@ access) or mitigated by a small cron ping; to confirm.
 | D28 | Paper plan exists → scanned/photographed and uploaded | Q&A 9 |
 | D29 | Bank details & structured communication deferred; simple booking reference | Q&A 9 |
 | D30 | Public map shows pending request count on free spots | Q&A 9 |
+| D31 | Tech stack approved (§6) | Q&A 10 |
+| D32 | Plan = A4 hand-drawn sheet with numbers; shapes are visual only | Q&A 10 |
+| D33 | Bulk emails only when the organiser decides; Gmail batching + daily cap | Q&A 10 |
+| D34 | Early-bird deadline independent from priority deadline | Q&A 10 |
 
 ## 12. Open questions
 
-1. **Tech stack** (§6): approve or adjust.
-2. **Paper plan**: roughly what size/scale? Are spot numbers already written on it (we
-   could use the scan directly and just click spots)?
-3. **Resident claim**: is the organiser OK with residents being invited automatically
-   every year (Phase 1 email), or should residents contact him themselves?
-4. **Early-bird date vs priority deadline**: are they the same date in practice?
+None blocking. To revisit later: data retention period, bank details / structured
+communication, Dutch UI, online payment.
