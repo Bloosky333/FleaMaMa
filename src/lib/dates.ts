@@ -55,3 +55,9 @@ export function formatDateFr(date: string | null | undefined, withWeekday = fals
 export function toBrusselsDate(at: Date): string {
   return todayBrussels(at);
 }
+
+/** "2027-05-01" + 7 → "2027-05-08". */
+export function addDaysIso(date: string, days: number): string {
+  const [y, m, d] = date.split("-").map(Number);
+  return new Date(Date.UTC(y, m - 1, d + days)).toISOString().slice(0, 10);
+}

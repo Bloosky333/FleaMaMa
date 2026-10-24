@@ -1,6 +1,14 @@
 /** Built-in email templates (French, plain text). Organisers can override them in the settings. */
 
-export type TemplateKey = "invitation" | "invitation_reminder" | "confirmation" | "unpaid_reminder" | "test";
+export type TemplateKey =
+  | "invitation"
+  | "invitation_reminder"
+  | "confirmation"
+  | "unpaid_reminder"
+  | "request_received"
+  | "request_alternative"
+  | "request_waitlist"
+  | "test";
 
 export type Template = { subject: string; body: string };
 
@@ -18,6 +26,18 @@ export const TEMPLATE_INFO: Record<TemplateKey, { label: string; description: st
     description: "Envoyée automatiquement quand un exposant confirme.",
   },
   unpaid_reminder: { label: "Rappel de paiement", description: "Relance des réservations non payées." },
+  request_received: {
+    label: "Demande reçue",
+    description: "Envoyée automatiquement quand quelqu’un demande un emplacement sur le site.",
+  },
+  request_alternative: {
+    label: "Autre emplacement proposé",
+    description: "Quand les emplacements demandés ne sont plus libres et que vous en proposez d’autres.",
+  },
+  request_waitlist: {
+    label: "Liste d’attente",
+    description: "Quand une demande est mise en liste d’attente.",
+  },
   test: { label: "Email de test", description: "Pour vérifier la configuration Gmail." },
 };
 
@@ -35,6 +55,7 @@ export const PLACEHOLDERS: Record<string, string> = {
   instructions_paiement: "Instructions de paiement (paramètres)",
   organisateur: "Nom de l’organisateur",
   raison: "« vous habitez juste en face » ou « vous l’aviez l’an dernier »",
+  demande: "Les choix d’une demande, ex. « 1er choix : n°12 et 13 ; 2e choix : n°20 »",
 };
 
 export const DEFAULT_TEMPLATES: Record<TemplateKey, Template> = {
@@ -94,6 +115,41 @@ Référence à indiquer : {{reference}}
 {{instructions_paiement}}
 
 Si vous avez déjà payé, merci de ne pas tenir compte de ce message.
+
+{{organisateur}}`,
+  },
+  request_received: {
+    subject: "Brocante {{annee}} : nous avons bien reçu votre demande",
+    body: `Bonjour {{prenom}},
+
+Nous avons bien reçu votre demande d’emplacement pour la brocante du {{date_brocante}} :
+{{demande}}
+
+Nous vous répondrons dès que possible. Vous pouvez suivre (ou annuler) votre demande ici :
+{{lien}}
+
+À bientôt,
+{{organisateur}}`,
+  },
+  request_alternative: {
+    subject: "Brocante {{annee}} : nous vous proposons {{emplacement_s}}",
+    body: `Bonjour {{prenom}},
+
+Les emplacements que vous aviez demandés ne sont malheureusement plus libres. Nous pouvons vous proposer {{emplacement_s}}, réservé(s) pour vous jusqu’au {{date_limite}}.
+
+Pour accepter (ou refuser), cliquez sur votre lien personnel :
+{{lien}}
+
+À bientôt,
+{{organisateur}}`,
+  },
+  request_waitlist: {
+    subject: "Brocante {{annee}} : votre demande est en liste d’attente",
+    body: `Bonjour {{prenom}},
+
+Tous les emplacements correspondant à votre demande sont pris pour le moment. Votre demande est en liste d’attente : nous vous recontactons dès qu’un emplacement se libère.
+
+Votre demande : {{lien}}
 
 {{organisateur}}`,
   },

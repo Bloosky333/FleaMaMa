@@ -12,12 +12,13 @@ const items = [
   { href: "/admin/exposants", label: "Exposants" },
   { href: "/admin/import", label: "Reprise historique" },
   { href: "/admin/priorites", label: "Priorités" },
+  { href: "/admin/demandes", label: "Demandes" },
+  { href: "/admin/jour-j", label: "Jour J" },
   { href: "/admin/emails", label: "Emails" },
   { href: "/admin/parametres", label: "Paramètres" },
   { href: "/admin/organisateurs", label: "Organisateurs" },
 ];
 
-const upcoming = ["Demandes (phase 2)", "Jour J"];
 
 export function AdminNav() {
   const pathname = usePathname();
@@ -37,14 +38,6 @@ export function AdminNav() {
           </Link>
         );
       })}
-      <div className="mt-4 hidden px-3 text-xs font-semibold tracking-wide text-stone-400 uppercase md:block">
-        Bientôt
-      </div>
-      {upcoming.map((label) => (
-        <span key={label} className="hidden px-3 py-1 text-sm text-stone-400 md:block">
-          {label}
-        </span>
-      ))}
     </nav>
   );
 }

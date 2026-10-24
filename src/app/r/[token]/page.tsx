@@ -7,12 +7,15 @@ import { getSettings, loadTariffGrid } from "@/lib/editions";
 import { resolveMagicLink } from "@/lib/magic-links";
 import { formatEuros, pricePerSpot } from "@/lib/pricing";
 import { joinLabels } from "@/lib/spots";
+import { loadChoices, requestSummary } from "@/lib/requests-server";
+import { cancelMyRequest } from "./actions";
 import { OfferForm } from "./offer-form";
 
 export const metadata: Metadata = { title: "Ma réservation", robots: { index: false } };
 
-export default async function BookingPage({ params }: PageProps<"/r/[token]">) {
+export default async function BookingPage({ params, searchParams }: PageProps<"/r/[token]">) {
   const { token } = await params;
+  const justSent = (await searchParams).nouveau !== undefined;
   const link = await resolveMagicLink(token);
   if (!link) notFound();
   let b = await loadBooking(link.bookingId);
@@ -35,7 +38,9 @@ export default async function BookingPage({ params }: PageProps<"/r/[token]">) {
             ? "Comme vous habitez juste en face, "
             : booking.priorityReason === "last_year"
               ? "Comme vous l’aviez l’an dernier, "
-              : ""}
+              : booking.source === "request"
+                ? "Les emplacements demandés n’étant plus libres, "
+                : ""}
           {b.spots.length > 1
             ? `les emplacements n°${labels} vous sont réservés`
             : `l’emplacement n°${labels} vous est réservé`}{" "}
@@ -74,6 +79,31 @@ export default async function BookingPage({ params }: PageProps<"/r/[token]">) {
           </p>
         )}
         <p className="text-sm text-stone-600">Une confirmation vous a aussi été envoyée par email.</p>
+      </div>
+    );
+  } else if (booking.status === "requested" || booking.status === "waitlist") {
+    const choices = await loadChoices(booking.id);
+    content = (
+      <div className="space-y-4">
+        {justSent ? (
+          <Alert tone="green">
+            Merci ! Votre demande est bien enregistrée. Un email de confirmation vous a été envoyé.
+          </Alert>
+        ) : booking.status === "waitlist" ? (
+          <Alert tone="amber">
+            Votre demande est en liste d’attente : nous vous recontactons dès qu’un emplacement se libère.
+          </Alert>
+        ) : (
+          <Alert tone="amber">Votre demande est en cours de traitement par l’organisateur.</Alert>
+        )}
+        <p className="text-sm">
+          <span className="text-stone-500">Votre demande :</span>{" "}
+          {requestSummary(choices.map((c) => c.spots.map((s) => s.label)))}
+        </p>
+        <p className="text-sm text-stone-600">Gardez ce lien : il vous permet de suivre votre demande.</p>
+        <form action={cancelMyRequest.bind(null, token)}>
+          <button className="text-sm text-red-700 underline">Annuler ma demande</button>
+        </form>
       </div>
     );
   } else if (booking.status === "declined") {

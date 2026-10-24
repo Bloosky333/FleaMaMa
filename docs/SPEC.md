@@ -3,7 +3,7 @@
 > Flea Market Manager: replaces an old FileMaker database used to manage the rental of
 > spots (emplacements) at a yearly brocante.
 
-Status: **v0.2 — ready for MVP**. Decisions marked ✅ come from the Q&A sessions
+Status: **v0.3 — all milestones of §8 implemented** (see README for what each one covers). Decisions marked ✅ come from the Q&A sessions
 (see [§11 Decisions log](#11-decisions-log)).
 
 ---
@@ -386,6 +386,12 @@ portable and simple:
   payments cover the amount, then dark blue), otherwise from pending priorities. Organisers can
   book free spots directly from the map (phone requests): the booking is confirmed at once and
   priced with the current tariff. Refunds are negative payments.
+- Phase 2 & market day (milestones 5–6): requests hold no spot until the organiser decides;
+  a spot is requestable when no booking holds it, it is active, and no pending priority
+  (planned offer or conflict) covers it. Requests are matched to an existing contact by email
+  only (completing missing fields); walk-ins by phone. Accepted requests are priced at the
+  request date. Proposed alternatives are offers valid 7 days. The printable lists are an HTML
+  page optimised for printing ("save as PDF" from the browser) rather than a generated PDF.
 
 ## 7. Non-functional requirements
 

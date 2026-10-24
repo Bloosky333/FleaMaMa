@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { endOfDayBrussels, formatDateFr, todayBrussels } from "./dates";
+import { addDaysIso, endOfDayBrussels, formatDateFr, todayBrussels } from "./dates";
 import { estimateDelay, isQuotaError } from "./email/schedule";
 import { DEFAULT_TEMPLATES, renderTemplate } from "./email/templates";
 import { paymentState } from "./payments";
@@ -131,6 +131,7 @@ describe("renderTemplate", () => {
         "montant",
         "reference",
         "emplacement_s",
+        "demande",
         "instructions_paiement",
         "organisateur",
         "raison",
@@ -174,4 +175,8 @@ describe("paymentState", () => {
   ] as const)("due %s, paid %s → %s", (due, paid, expected) =>
     expect(paymentState(due, paid)).toBe(expected),
   );
+});
+
+describe("addDaysIso", () => {
+  it("crosses months", () => expect(addDaysIso("2027-04-28", 7)).toBe("2027-05-05"));
 });

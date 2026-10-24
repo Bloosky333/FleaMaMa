@@ -11,7 +11,7 @@ import { isUniqueViolation } from "./db-errors";
 import { amountDue, formatEuros } from "./pricing";
 import { compareLabels, joinLabels, spotsPhrase } from "./spots";
 
-type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
+export type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
 
 /** "2027-042": year and booking number, easy to write in a transfer. */
 export const bookingReference = (year: number, id: number) => `${year}-${String(id).padStart(3, "0")}`;
@@ -112,9 +112,10 @@ export async function confirmBooking(bookingId: number, keepSpotIds: number[]): 
   if (!kept.length)
     return { error: "Choisissez au moins un emplacement, ou indiquez que vous ne venez pas." };
 
-  const today = todayBrussels();
+  // A request keeps the price of the day it was made (spec §4.4: booking date = request date).
+  const bookedOn = b.booking.requestedAt ? todayBrussels(b.booking.requestedAt) : todayBrussels();
   const grid = await loadTariffGrid(b.edition.id);
-  const amount = amountDue(grid, b.contact.kind, kept.length, today, b.edition.earlyBirdDeadline);
+  const amount = amountDue(grid, b.contact.kind, kept.length, bookedOn, b.edition.earlyBirdDeadline);
   await db.transaction(async (tx) => {
     const released = b.spots.filter((s) => !kept.includes(s.id)).map((s) => s.id);
     if (released.length) {

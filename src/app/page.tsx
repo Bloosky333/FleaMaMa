@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-// The public pages (exhibitor map & requests) come in a later milestone.
+// The public entry point is the request page; organisers use /admin.
 export default function Home() {
-  redirect("/admin");
+  redirect("/reserver");
 }

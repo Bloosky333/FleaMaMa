@@ -63,6 +63,7 @@ function describe(s: MapSpot, previousYear: number | null): string[] {
   }
   if (s.lastYear.length) lines.push(`En ${previousYear ?? "l’an dernier"} : ${s.lastYear.join(", ")}`);
   if (s.residents.length) lines.push(`Riverain : ${s.residents.join(", ")}`);
+  if (!s.booking && s.requests.length) lines.push(`Demandé par : ${s.requests.join(", ")}`);
   return lines;
 }
 

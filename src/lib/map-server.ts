@@ -16,6 +16,7 @@ import { loadEditionBookings } from "./edition-bookings-server";
 import { isSettled, type PaymentState } from "./payments";
 import { reasonLabels } from "./priorities";
 import { loadPriorityOverview } from "./priorities-server";
+import { requestsBySpot } from "./requests-server";
 
 export type MapStatus = "free" | "priority" | "conflict" | "offered" | "booked" | "paid" | "inactive";
 
@@ -47,13 +48,15 @@ export type MapSpot = {
   residents: string[];
   /** Pending priority (not prepared yet) or conflict, e.g. "DUPONT Marie (Riverain)". */
   priority: string[];
+  /** People who asked for this spot on the public page (not handled yet). */
+  requests: string[];
 };
 
 export async function loadMapData(
   edition: Edition,
 ): Promise<{ spots: MapSpot[]; previousYear: number | null }> {
   const previous = await getPreviousEdition(edition.year);
-  const [allSpots, live, lastYear, residents, inactive, overview] = await Promise.all([
+  const [allSpots, live, lastYear, residents, inactive, overview, requested] = await Promise.all([
     db.select().from(spots),
     loadEditionBookings(edition.id, { liveOnly: true }),
     previous
@@ -89,6 +92,7 @@ export async function loadMapData(
       .from(spotEditionStates)
       .where(eq(spotEditionStates.editionId, edition.id)),
     loadPriorityOverview(edition),
+    requestsBySpot(edition.id),
   ]);
 
   const group = (rows: { spotId: number; firstName: string; lastName: string; company: string }[]) => {
@@ -151,6 +155,7 @@ export async function loadMapData(
         lastYear: lastYearBySpot.get(s.id) ?? [],
         residents: residentsBySpot.get(s.id) ?? [],
         priority: conflicts.get(s.id) ?? planned.get(s.id) ?? [],
+        requests: (requested.get(s.id) ?? []).map((r) => r.contact),
       };
     }),
   };

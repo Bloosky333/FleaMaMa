@@ -6,7 +6,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
   const user = await requireUser();
   return (
     <div className="min-h-screen md:flex">
-      <aside className="border-b border-stone-200 bg-white p-3 md:sticky md:top-0 md:h-screen md:w-56 md:shrink-0 md:border-r md:border-b-0">
+      <aside className="border-b border-stone-200 bg-white p-3 md:sticky md:top-0 md:h-screen md:w-56 md:shrink-0 md:border-r md:border-b-0 print:hidden">
         <div className="mb-3 flex items-center justify-between px-3 md:block">
           <div className="text-brand-700 text-lg font-semibold">FleaMaMa</div>
           <form action={logout} className="md:mt-1">
@@ -16,7 +16,7 @@ export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
         </div>
         <AdminNav />
       </aside>
-      <main className="min-w-0 flex-1 p-4 md:p-8">{children}</main>
+      <main className="min-w-0 flex-1 p-4 md:p-8 print:p-0">{children}</main>
     </div>
   );
 }

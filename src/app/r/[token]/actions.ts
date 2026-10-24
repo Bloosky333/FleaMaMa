@@ -10,6 +10,7 @@ import { appendBookingNote, confirmBooking, setBookingClosed } from "@/lib/booki
 import { normalizeEmail, normalizePhone } from "@/lib/contacts";
 import { processOutbox } from "@/lib/email/outbox";
 import { resolveMagicLink } from "@/lib/magic-links";
+import { refuseRequest } from "@/lib/requests-server";
 
 export type RespondState = { error?: string } | undefined;
 
@@ -60,5 +61,13 @@ export async function respondToOffer(
   } else {
     return { error: "Choisissez de confirmer ou non." };
   }
+  redirect(`/r/${token}`);
+}
+
+/** The requester withdraws a request that has not been handled yet. */
+export async function cancelMyRequest(token: string) {
+  const link = await resolveMagicLink(token);
+  if (!link) return;
+  await refuseRequest(link.bookingId);
   redirect(`/r/${token}`);
 }

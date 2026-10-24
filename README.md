@@ -67,8 +67,29 @@ taken/free spots. Replaces an old FileMaker database.
 - **Booking page**: payments and refunds (amount, method, date, reference), cancel (with the refund
   deadline shown), resend the confirmation, emails sent.
 
-**Next**: open requests on the public map (phase 2), market-day tools (check-in, walk-ins,
-printable lists).
+**Milestone 5 (done)** — requests from everyone (phase 2):
+
+- **Public page `/reserver`** (the site's home page), open when the edition is at the step
+  "Réservations ouvertes à tous" or from the opening date: the plan with free spots, a
+  **1st / 2nd / 3rd choice** picker (several spots per choice), an orange dot on spots others have
+  already asked for, the price, and the form (contact details, private/pro, message, consent).
+  The requester gets an email and a personal link to follow or cancel the request.
+- **Demandes** (organiser): requests in arrival order with each choice still free or taken and who
+  else wants the same spot. One click **attributes** a choice (confirmed, priced at the request
+  date, confirmation email). When nothing is free, **nearby free spots are suggested** (same street
+  first) and can be **proposed** for 7 days (the requester accepts on their page); or put on the
+  **waiting list** / refuse. Requests also show on the organiser map's tooltip.
+
+**Milestone 6 (done)** — market day (*Jour J*), made for a phone:
+
+- Check-in list by street with search and filters (not arrived yet / to collect / absent):
+  **✓ Là**, **✗ Absent**, **Encaisser** (cash), tap-to-call; arrivals and money left to collect.
+- **Exposant sur place**: pick free spots, name and phone (reuses a known exhibitor with the same
+  phone), paid in cash → booked, present and paid in one go.
+- **Imprimer**: the coloured map with numbers and a list per street (exhibitor, phone, to collect,
+  present box), ready to print or save as PDF.
+
+Absences and unpaid bookings show up as warnings in next year's priorities.
 
 ## Tech
 
