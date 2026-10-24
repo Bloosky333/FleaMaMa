@@ -163,7 +163,15 @@ export default async function ContactPage({ params, searchParams }: PageProps<"/
                 <tbody className="divide-y divide-stone-100">
                   {history.map((b) => (
                     <tr key={b.id}>
-                      <td className="py-1.5 pr-3 font-medium">{b.year}</td>
+                      <td className="py-1.5 pr-3 font-medium">
+                        {b.status === "historical" ? (
+                          b.year
+                        ) : (
+                          <Link href={`/admin/reservations/${b.id}`} className="text-brand-700 underline">
+                            {b.year}
+                          </Link>
+                        )}
+                      </td>
                       <td className="py-1.5 pr-3">n° {b.labels.sort(compareLabels).join(", ") || "—"}</td>
                       <td className="py-1.5 pr-3">{statusLabels[b.status] ?? b.status}</td>
                       <td className="py-1.5">

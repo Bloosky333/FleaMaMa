@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { endOfDayBrussels, formatDateFr, todayBrussels } from "./dates";
 import { estimateDelay, isQuotaError } from "./email/schedule";
 import { DEFAULT_TEMPLATES, renderTemplate } from "./email/templates";
+import { paymentState } from "./payments";
 import { amountDue, formatEuros, parseEuros, pricePerSpot, tariffGrid } from "./pricing";
 import { mainReason, planOffers } from "./priorities";
 
@@ -158,4 +159,19 @@ describe("outbox pacing", () => {
       false,
     );
   });
+});
+
+describe("paymentState", () => {
+  it.each([
+    [1000, 0, "unpaid"],
+    [1000, 400, "partial"],
+    [1000, 1000, "paid"],
+    [1000, 1500, "overpaid"],
+    [1000, -200, "unpaid"],
+    [0, 0, "paid"],
+    [null, 0, "no_amount"],
+    [null, 500, "paid"],
+  ] as const)("due %s, paid %s → %s", (due, paid, expected) =>
+    expect(paymentState(due, paid)).toBe(expected),
+  );
 });

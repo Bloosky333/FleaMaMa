@@ -4,6 +4,7 @@ import type Konva from "konva";
 import type { KonvaEventObject } from "konva/lib/Node";
 import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { Circle, Group, Image as KImage, Layer, Line, Rect, Stage, Text, Transformer } from "react-konva";
+import { usePlanImage, useElementSize } from "@/components/plan-hooks";
 import { Alert, Button, Field, Input } from "@/components/ui";
 import { compareLabels, nextLabel, rowLabels, rowShapes, type SpotShape } from "@/lib/spots";
 import { createSpots, deleteSpots, type SpotPatch, updatePlanDefaults, updateSpots } from "./actions";
@@ -23,34 +24,6 @@ const COLORS = {
   selectedStroke: "#1d4ed8",
   preview: "#d97706",
 };
-
-function usePlanImage(src: string) {
-  const [img, setImg] = useState<HTMLImageElement | null>(null);
-  useEffect(() => {
-    const i = new window.Image();
-    i.onload = () => setImg(i);
-    i.src = src;
-    return () => {
-      i.onload = null;
-    };
-  }, [src]);
-  return img;
-}
-
-function useElementSize<T extends HTMLElement>() {
-  const ref = useRef<T>(null);
-  const [size, setSize] = useState({ width: 0, height: 0 });
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const ro = new ResizeObserver(([entry]) =>
-      setSize({ width: entry.contentRect.width, height: entry.contentRect.height }),
-    );
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-  return [ref, size] as const;
-}
 
 function firstFreeLabel(spots: EditorSpot[]) {
   const labels = spots.map((s) => s.label).sort(compareLabels);

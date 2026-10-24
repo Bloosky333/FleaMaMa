@@ -381,6 +381,11 @@ portable and simple:
   an exhibitor link is opened. Exhibitors without email get their personal link from the
   organiser (SMS) or are confirmed by the organiser after a phone call. A contact who
   declined, or whose offer was withdrawn or expired, gets no new priority offer that year.
+- Map & payments (milestone 4): the status map is read-only (the layout is edited in *Plan*).
+  A spot's colour comes from its live booking (offer → light blue; confirmed → orange until
+  payments cover the amount, then dark blue), otherwise from pending priorities. Organisers can
+  book free spots directly from the map (phone requests): the booking is confirmed at once and
+  priced with the current tariff. Refunds are negative payments.
 
 ## 7. Non-functional requirements
 

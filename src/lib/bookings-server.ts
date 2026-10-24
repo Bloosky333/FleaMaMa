@@ -7,6 +7,7 @@ import { endOfDayBrussels, formatDateFr, todayBrussels } from "./dates";
 import { getSettings, loadTariffGrid } from "./editions";
 import { enqueueEmails, PRIORITY_TRANSACTIONAL } from "./email/outbox";
 import { bookingLink } from "./magic-links";
+import { isUniqueViolation } from "./db-errors";
 import { amountDue, formatEuros } from "./pricing";
 import { compareLabels, joinLabels, spotsPhrase } from "./spots";
 
@@ -199,3 +200,69 @@ export async function appendBookingNote(bookingId: number, note: string) {
     .set({ notes: sql`trim(both from ${bookings.notes} || E'\n' || ${note})` })
     .where(eq(bookings.id, bookingId));
 }
+
+/**
+ * The organiser books spots directly for someone (phone request, market day walk-in…):
+ * confirmed at once, priced with today's tariff.
+ */
+export async function createManualBooking(input: {
+  editionId: number;
+  contactId: number;
+  spotIds: number[];
+  source: "request" | "walk_in";
+  sendConfirmation: boolean;
+}): Promise<{ bookingId?: number; error?: string }> {
+  const [edition] = await db.select().from(editions).where(eq(editions.id, input.editionId));
+  const [contact] = await db.select().from(contacts).where(eq(contacts.id, input.contactId));
+  if (!edition || !contact) return { error: "Édition ou exposant introuvable." };
+  if (!input.spotIds.length) return { error: "Aucun emplacement choisi." };
+  const grid = await loadTariffGrid(edition.id);
+  const amount = amountDue(
+    grid,
+    contact.kind,
+    input.spotIds.length,
+    todayBrussels(),
+    edition.earlyBirdDeadline,
+  );
+  let bookingId: number;
+  try {
+    bookingId = await db.transaction(async (tx) => {
+      const id = await createBooking(tx, {
+        editionId: edition.id,
+        year: edition.year,
+        contactId: contact.id,
+        status: "confirmed",
+        source: input.source,
+        spotIds: input.spotIds,
+      });
+      await tx
+        .update(bookings)
+        .set({ confirmedAt: new Date(), amountDueCents: amount })
+        .where(eq(bookings.id, id));
+      return id;
+    });
+  } catch (err) {
+    if (isUniqueViolation(err))
+      return { error: "Cet emplacement vient d’être attribué à quelqu’un d’autre." };
+    throw err;
+  }
+  if (input.sendConfirmation && contact.email) {
+    const b = (await loadBooking(bookingId))!;
+    await enqueueEmails(
+      [
+        {
+          to: contact.email,
+          template: "confirmation",
+          vars: await emailVars(b, await bookingLink(contact.id, bookingId)),
+          contactId: contact.id,
+          bookingId,
+        },
+      ],
+      { priority: PRIORITY_TRANSACTIONAL },
+    );
+  }
+  return { bookingId };
+}
+
+/** Bookings of an edition still holding spots or waiting for an answer (not cancelled/declined/expired). */
+export const liveStatuses = ["offered", "requested", "confirmed", "waitlist"] as const;

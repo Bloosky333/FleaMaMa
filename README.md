@@ -52,8 +52,23 @@ taken/free spots. Replaces an old FileMaker database.
 - **Emails**: every email goes through an outbox sent in small batches with a rolling 24 h cap
   (default 20 per batch, 300/24 h); Gmail refusals pause sending and show a warning.
 
-**Next**: map of bookings (status colours, hover details), payments, open requests on the
-public map (phase 2), market-day tools.
+**Milestone 4 (done)** — map, bookings and payments:
+
+- **Carte**: the plan coloured by status — free, priority to prepare, priority conflict,
+  offer waiting, booked unpaid, booked and paid, inactive — with counts in the legend (click to
+  hide a category) and a search box (name, number, street) that highlights matches.
+  **Hover** a spot: who booked it, phone, paid/due; or, when free, who had it last year, the
+  residents and pending priorities. **Click**: record the payment in one click, open the booking,
+  or **assign** free spots (Shift+click for several) to an exhibitor found by name/phone/email,
+  with an optional confirmation email.
+- **Réservations**: list with filters (status, payment), totals (expected / received / to collect),
+  one-click "Liquide / Virement", bulk "mark paid", **payment reminders** sent on demand, and an
+  **Excel export** (CSV).
+- **Booking page**: payments and refunds (amount, method, date, reference), cancel (with the refund
+  deadline shown), resend the confirmation, emails sent.
+
+**Next**: open requests on the public map (phase 2), market-day tools (check-in, walk-ins,
+printable lists).
 
 ## Tech
 

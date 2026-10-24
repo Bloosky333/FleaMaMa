@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 
 const items = [
   { href: "/admin", label: "Tableau de bord" },
+  { href: "/admin/carte", label: "Carte" },
+  { href: "/admin/reservations", label: "Réservations" },
   { href: "/admin/plan", label: "Plan" },
   { href: "/admin/emplacements", label: "Emplacements" },
   { href: "/admin/exposants", label: "Exposants" },
@@ -15,7 +17,7 @@ const items = [
   { href: "/admin/organisateurs", label: "Organisateurs" },
 ];
 
-const upcoming = ["Carte des réservations", "Paiements", "Demandes (phase 2)", "Jour J"];
+const upcoming = ["Demandes (phase 2)", "Jour J"];
 
 export function AdminNav() {
   const pathname = usePathname();
