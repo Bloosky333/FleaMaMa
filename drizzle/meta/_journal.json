@@ -15,6 +15,13 @@
       "when": 1792816419970,
       "tag": "0001_history_import",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792817215442,
+      "tag": "0002_priorities_emails",
+      "breakpoints": true
     }
   ]
 }

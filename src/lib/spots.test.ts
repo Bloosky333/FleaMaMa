@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { compareLabels, nextLabel, parseLabel, rowLabels, rowShapes } from "./spots";
+import { compareLabels, joinLabels, nextLabel, parseLabel, rowLabels, rowShapes, spotsPhrase } from "./spots";
 
 describe("parseLabel", () => {
   it("splits number and suffix", () => {
@@ -27,6 +27,15 @@ describe("rowLabels", () => {
   it("numbers sequentially", () => expect(rowLabels("12", 3)).toEqual(["12", "13", "14"]));
   it("keeps the suffix only on the first", () => expect(rowLabels("12bis", 2)).toEqual(["12bis", "13"]));
   it("rejects non-numeric start", () => expect(() => rowLabels("A", 2)).toThrow());
+});
+
+describe("joinLabels / spotsPhrase", () => {
+  it("lists labels in French", () => {
+    expect(joinLabels(["5"])).toBe("5");
+    expect(joinLabels(["1", "2", "3"])).toBe("1, 2 et 3");
+    expect(spotsPhrase(["5"])).toBe("l’emplacement n°5");
+    expect(spotsPhrase(["1", "2"])).toBe("les emplacements n°1 et 2");
+  });
 });
 
 describe("rowShapes", () => {

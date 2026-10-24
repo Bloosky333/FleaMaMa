@@ -33,6 +33,18 @@ export function nextLabel(previous: string | undefined, used: Iterable<string>):
   return String(n);
 }
 
+/** ["1", "2", "3"] → "1, 2 et 3". */
+export function joinLabels(labels: string[]): string {
+  return labels.length <= 1 ? (labels[0] ?? "") : `${labels.slice(0, -1).join(", ")} et ${labels.at(-1)}`;
+}
+
+/** "l’emplacement n°5" / "les emplacements n°1 et 2". */
+export function spotsPhrase(labels: string[]): string {
+  return labels.length > 1
+    ? `les emplacements n°${joinLabels(labels)}`
+    : `l’emplacement n°${labels[0] ?? "?"}`;
+}
+
 /** Labels for a row of `count` spots starting at `start` ("12" → 12, 13, …). */
 export function rowLabels(start: string, count: number): string[] {
   const { num, suffix } = parseLabel(start);

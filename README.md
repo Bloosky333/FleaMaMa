@@ -35,8 +35,25 @@ taken/free spots. Replaces an old FileMaker database.
 - **Validate** creates the contacts and the year's bookings (with the paid flag);
   **Annuler l’import** undoes it cleanly so it can be corrected and validated again.
 
-**Next**: editions & tariffs, priorities and invitations, Gmail outbox, map with booking status,
-public request page, market-day tools.
+**Milestone 3 (done)** — editions, priorities and invitations:
+
+- **Paramètres**: create the year's edition (prices and payment text copied from the last one),
+  market date, priority deadline, early-bird date, payment/refund dates, prices per spot
+  (private/pro × early-bird/normal), email signature, batch size and daily cap, test email.
+  Email texts are editable (*Modifier les textes des emails*) with placeholders.
+- **Priorités**: computes who has a priority (last year's exhibitors, residents), groups each
+  person's spots into one offer, lists **conflicts** for the organiser to settle, then prepares
+  the offers. Bulk invitations / reminders are sent **only when the organiser clicks**; per offer:
+  confirm by phone, "ne vient pas", extend, withdraw, or get the personal link (for SMS).
+  Overdue offers expire automatically and free their spots.
+- **Exhibitor page** (`/r/…`, personal link, no account): confirm all or some spots, see the
+  price (early-bird applied), update contact details, leave a message, or decline. A
+  confirmation email with amount, reference and payment instructions goes out immediately.
+- **Emails**: every email goes through an outbox sent in small batches with a rolling 24 h cap
+  (default 20 per batch, 300/24 h); Gmail refusals pause sending and show a warning.
+
+**Next**: map of bookings (status colours, hover details), payments, open requests on the
+public map (phase 2), market-day tools.
 
 ## Tech
 
@@ -78,7 +95,33 @@ Useful scripts:
    - `SESSION_SECRET` — a long random string (`openssl rand -base64 32`)
    - `ANTHROPIC_API_KEY` — optional, enables reading photos of the old software
      ([console.anthropic.com](https://console.anthropic.com); a few cents per photo)
+   - `APP_URL` — the public address of the app (used in the links sent by email)
+   - `GMAIL_USER`, `GMAIL_APP_PASSWORD`, `EMAIL_FROM_NAME` — see *Emails with Gmail* below
+   - `CRON_SECRET` — a long random string protecting the email sending job
 4. Open the Vercel URL: the first visit asks to create the first organiser account.
+
+### Emails with Gmail
+
+1. On the Google account that will send the emails, turn on **2-Step Verification**.
+2. Create an **app password** (Google Account → Security → App passwords), name it "FleaMaMa".
+3. Set `GMAIL_USER` (the Gmail address), `GMAIL_APP_PASSWORD` (the 16 letters, without spaces) and
+   `EMAIL_FROM_NAME` (e.g. "Brocante de Limal") in Vercel, then redeploy.
+4. In the app: *Paramètres → M’envoyer un email de test*.
+
+Replies from exhibitors arrive directly in that Gmail inbox.
+
+### Sending emails in batches (scheduled job)
+
+Emails wait in an outbox and leave in small batches to respect Gmail's limits. The job is the
+GitHub Actions workflow `.github/workflows/outbox.yml`, which calls `/api/outbox/process` every
+10 minutes (Vercel's free plan only allows one scheduled job per day). To enable it, in the GitHub
+repository settings:
+
+- *Secrets and variables → Actions → Secrets*: `APP_URL` and `CRON_SECRET` (same values as in Vercel);
+- *Variables*: `OUTBOX_ENABLED` = `true`.
+
+The *Emails* page also has a "send a batch now" button, and confirmation emails are sent right away.
+For local development, `EMAIL_TRANSPORT=log` prints emails instead of sending them.
 
 Note: free Supabase projects pause after a week without activity; opening the app wakes them up
 (the first request can take a few seconds).

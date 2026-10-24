@@ -170,7 +170,10 @@ export const importRows = pgTable(
     position: integer("position").notNull(),
     data: jsonb("data").$type<Record<string, string>>().notNull(),
     /** Fields the AI was unsure about. */
-    uncertain: text("uncertain").array().notNull().default(sql`'{}'::text[]`),
+    uncertain: text("uncertain")
+      .array()
+      .notNull()
+      .default(sql`'{}'::text[]`),
     photoId: integer("photo_id").references(() => importPhotos.id, { onDelete: "set null" }),
     /** auto | new | existing | skip */
     action: text("action").notNull().default("auto"),
@@ -368,6 +371,21 @@ export const emailOutbox = pgTable(
   (t) => [index("email_outbox_queue_idx").on(t.status, t.priority, t.scheduledAt)],
 );
 
+/** Organiser-edited version of a built-in email template (see src/lib/email/templates.ts). */
+export const emailTemplates = pgTable("email_templates", {
+  key: text("key").primaryKey(),
+  subject: text("subject").notNull(),
+  body: text("body").notNull(),
+  updatedAt: updatedAt(),
+});
+
+/** Small key/value store for app-wide settings and state (e.g. outbox pause). */
+export const appSettings = pgTable("app_settings", {
+  key: text("key").primaryKey(),
+  value: jsonb("value").notNull(),
+  updatedAt: updatedAt(),
+});
+
 export const auditLog = pgTable("audit_log", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").references(() => users.id, { onDelete: "set null" }),
@@ -381,3 +399,5 @@ export const auditLog = pgTable("audit_log", {
 export type Spot = typeof spots.$inferSelect;
 export type Contact = typeof contacts.$inferSelect;
 export type Plan = typeof plans.$inferSelect;
+export type Edition = typeof editions.$inferSelect;
+export type Booking = typeof bookings.$inferSelect;

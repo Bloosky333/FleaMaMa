@@ -213,15 +213,13 @@ export async function commitBatch(
           importBatchId: batchId,
         })
         .returning({ id: bookings.id });
-      await tx
-        .insert(bookingSpots)
-        .values(
-          labels.map((l) => ({
-            bookingId: booking.id,
-            spotId: spotIds.get(l.toLowerCase())!,
-            editionId: edition.id,
-          })),
-        );
+      await tx.insert(bookingSpots).values(
+        labels.map((l) => ({
+          bookingId: booking.id,
+          spotId: spotIds.get(l.toLowerCase())!,
+          editionId: edition.id,
+        })),
+      );
     }
     await tx
       .update(importBatches)

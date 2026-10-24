@@ -30,19 +30,23 @@ export function LinkButton({
   return <Link className={buttonClass(variant, className)} {...props} />;
 }
 
-const fieldClass =
-  "block w-full rounded-md border border-stone-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-100 focus:outline-none";
+const fieldBase =
+  "block rounded-md border border-stone-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-100 focus:outline-none";
+
+/** Full width unless the caller sets its own width (e.g. "w-28"). */
+const fieldClass = (className: string) =>
+  `${fieldBase} ${/(^|\s)w-/.test(className) ? "" : "w-full"} ${className}`;
 
 export function Input({ className = "", ...props }: ComponentProps<"input">) {
-  return <input className={`${fieldClass} ${className}`} {...props} />;
+  return <input className={fieldClass(className)} {...props} />;
 }
 
 export function Select({ className = "", ...props }: ComponentProps<"select">) {
-  return <select className={`${fieldClass} ${className}`} {...props} />;
+  return <select className={fieldClass(className)} {...props} />;
 }
 
 export function Textarea({ className = "", ...props }: ComponentProps<"textarea">) {
-  return <textarea className={`${fieldClass} ${className}`} {...props} />;
+  return <textarea className={fieldClass(className)} {...props} />;
 }
 
 export function Field({

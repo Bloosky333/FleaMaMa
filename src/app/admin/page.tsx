@@ -1,16 +1,17 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { eq, isNull, sql } from "drizzle-orm";
+import { and, eq, isNull, sql } from "drizzle-orm";
 import { Card, PageHeader } from "@/components/ui";
 import { db } from "@/db";
-import { contacts, importBatches, plans, residentLinks, spots } from "@/db/schema";
+import { bookings, contacts, importBatches, plans, residentLinks, spots } from "@/db/schema";
+import { getCurrentEdition } from "@/lib/editions";
 import { requireUser } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Tableau de bord" };
 
 export default async function Dashboard() {
   const user = await requireUser();
-  const [[plan], [spotStats], [contactStats], [residentStats], [imported]] = await Promise.all([
+  const [[plan], [spotStats], [contactStats], [residentStats], [imported], edition] = await Promise.all([
     db.select({ id: plans.id }).from(plans).limit(1),
     db
       .select({
@@ -24,8 +25,22 @@ export default async function Dashboard() {
       .from(contacts)
       .where(isNull(contacts.mergedIntoId)),
     db.select({ total: sql<number>`count(distinct ${residentLinks.contactId})::int` }).from(residentLinks),
-    db.select({ id: importBatches.id }).from(importBatches).where(eq(importBatches.status, "committed")).limit(1),
+    db
+      .select({ id: importBatches.id })
+      .from(importBatches)
+      .where(eq(importBatches.status, "committed"))
+      .limit(1),
+    getCurrentEdition(),
   ]);
+  const [offers] = edition
+    ? await db
+        .select({
+          total: sql<number>`count(*)::int`,
+          invited: sql<number>`count(*) filter (where exists (select 1 from email_outbox o where o.booking_id = ${bookings.id} and o.template = 'invitation'))::int`,
+        })
+        .from(bookings)
+        .where(and(eq(bookings.editionId, edition.id), eq(bookings.source, "priority")))
+    : [{ total: 0, invited: 0 }];
 
   const steps = [
     { done: !!plan, label: "Importer le plan papier", href: "/admin/plan" },
@@ -41,6 +56,13 @@ export default async function Dashboard() {
       label: "Lier les riverains à leurs emplacements",
       href: "/admin/exposants",
     },
+    {
+      done: !!edition?.priorityDeadline,
+      label: edition ? `Fixer les dates et les prix ${edition.year}` : "Créer l’édition de cette année",
+      href: "/admin/parametres",
+    },
+    { done: offers.total > 0, label: "Préparer les offres prioritaires", href: "/admin/priorites" },
+    { done: offers.invited > 0, label: "Envoyer les invitations", href: "/admin/priorites" },
   ];
 
   const stats = [
@@ -83,8 +105,8 @@ export default async function Dashboard() {
           ))}
         </ol>
         <p className="mt-4 text-xs text-stone-500">
-          Prochaines étapes (en développement) : reprise de l’historique de l’an dernier, priorités et
-          invitations.
+          Prochaines étapes (en développement) : carte des réservations, paiements, demandes ouvertes à tous,
+          jour J.
         </p>
       </Card>
     </>

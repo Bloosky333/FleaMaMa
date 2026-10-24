@@ -1,0 +1,19 @@
+# Sends queued emails in small batches (Gmail limits) and expires overdue offers.
+# Needs two repository secrets: APP_URL (e.g. https://fleamama.vercel.app) and CRON_SECRET
+# (same value as the CRON_SECRET environment variable of the app).
+name: Email outbox
+
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    if: ${{ vars.OUTBOX_ENABLED == 'true' }}
+    steps:
+      - name: Process outbox
+        run: |
+          curl --fail-with-body -sS -H "Authorization: Bearer ${{ secrets.CRON_SECRET }}" \
+            "${{ secrets.APP_URL }}/api/outbox/process"

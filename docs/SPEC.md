@@ -374,6 +374,13 @@ portable and simple:
   the organiser validates. A validated import can be undone (bookings removed, contacts
   it created removed unless used elsewhere). Historical bookings use status `historical`
   with the old system's paid flag kept as information.
+- Priorities & invitations (milestone 3): booking references are short (`2027-042`) and
+  double as the transfer communication. The scheduled job is a GitHub Actions workflow
+  calling `/api/outbox/process` every 10 minutes (Vercel's free cron runs only daily); it
+  also expires overdue offers, which are otherwise expired whenever the Priorités page or
+  an exhibitor link is opened. Exhibitors without email get their personal link from the
+  organiser (SMS) or are confirmed by the organiser after a phone call. A contact who
+  declined, or whose offer was withdrawn or expired, gets no new priority offer that year.
 
 ## 7. Non-functional requirements
 
