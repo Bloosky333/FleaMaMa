@@ -14,6 +14,7 @@ import { todayBrussels } from "@/lib/dates";
 import { loadEditionBookings } from "@/lib/edition-bookings-server";
 import { getCurrentEdition } from "@/lib/editions";
 import { enqueueEmails, type OutgoingEmail, PRIORITY_TRANSACTIONAL, processOutbox } from "@/lib/email/outbox";
+import { emailsEnabled } from "@/lib/email/transport";
 import { bookingLink } from "@/lib/magic-links";
 import { isSettled, paymentState } from "@/lib/payments";
 import { deletePayment, paidTotals, recordPayment } from "@/lib/payments-server";
@@ -146,7 +147,7 @@ export async function assignSpots(
 export async function resendConfirmation(bookingId: number) {
   await requireUser();
   const b = await loadBooking(bookingId);
-  if (!b?.contact.email || b.booking.status !== "confirmed") return;
+  if (!b?.contact.email || b.booking.status !== "confirmed" || !(await emailsEnabled())) return;
   await enqueueEmails(
     [
       {
@@ -169,7 +170,7 @@ export async function sendPaymentReminders(
 ): Promise<{ queued: number; noEmail: number }> {
   const user = await requireUser();
   const edition = await getCurrentEdition();
-  if (!edition) return { queued: 0, noEmail: 0 };
+  if (!edition || !(await emailsEnabled())) return { queued: 0, noEmail: 0 };
   const all = await loadEditionBookings(edition.id, { liveOnly: true });
   const targets = all.filter(
     (b) =>

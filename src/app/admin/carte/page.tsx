@@ -6,7 +6,7 @@ import { db } from "@/db";
 import { plans } from "@/db/schema";
 import { requireUser } from "@/lib/auth";
 import { expireOffers } from "@/lib/bookings-server";
-import { getCurrentEdition } from "@/lib/editions";
+import { getCurrentEdition, getSettings } from "@/lib/editions";
 import { loadMapData } from "@/lib/map-server";
 import StatusMap from "./status-map-loader";
 
@@ -49,11 +49,16 @@ export default async function MapPage() {
     );
   }
   await expireOffers(edition.id);
-  const data = await loadMapData(edition);
+  const [data, settings] = await Promise.all([loadMapData(edition), getSettings()]);
   return (
     <>
       <PageHeader title={`Carte ${edition.year}`} description="Emplacements libres et réservés, en direct." />
-      <StatusMap plan={plan} spots={data.spots} previousYear={data.previousYear} />
+      <StatusMap
+        plan={plan}
+        spots={data.spots}
+        previousYear={data.previousYear}
+        emailsEnabled={settings.emailEnabled}
+      />
     </>
   );
 }

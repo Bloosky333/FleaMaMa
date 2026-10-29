@@ -10,6 +10,7 @@ import { requireUser } from "@/lib/auth";
 import { confirmBooking, extendOffer, loadBooking, setBookingClosed } from "@/lib/bookings-server";
 import { getCurrentEdition } from "@/lib/editions";
 import { processOutbox } from "@/lib/email/outbox";
+import { emailsEnabled } from "@/lib/email/transport";
 import { queueInvitations } from "@/lib/invitations-server";
 import { bookingLink } from "@/lib/magic-links";
 import type { PriorityReason } from "@/lib/priorities";
@@ -52,6 +53,7 @@ export type InvitationMode = "new" | "reminder" | "selected";
 
 export async function sendInvitations(mode: InvitationMode, selectedIds: number[] = []) {
   const user = await requireUser();
+  if (!(await emailsEnabled())) return fail("Les emails sont désactivés (Paramètres).");
   const edition = await currentEditionOrFail();
   const offered = and(
     eq(bookings.editionId, edition.id),

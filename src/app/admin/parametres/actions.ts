@@ -12,8 +12,10 @@ import { requireUser } from "@/lib/auth";
 import { loadTariffGrid, saveTariffGrid, setSettings } from "@/lib/editions";
 import { enqueueEmails, processOutbox, PRIORITY_TRANSACTIONAL } from "@/lib/email/outbox";
 import { isTemplateKey } from "@/lib/email/templates";
+import { emailConfig } from "@/lib/email/transport";
 import { getSettings } from "@/lib/editions";
 import { parseEuros } from "@/lib/pricing";
+import { seal } from "@/lib/secret-box";
 
 /** New edition: copies prices and payment instructions from the last edition that had them. */
 export async function createEdition(formData: FormData) {
@@ -86,6 +88,10 @@ export async function saveEdition(
 }
 
 const emailSettingsSchema = z.object({
+  emailEnabled: z.literal("on").optional(),
+  gmailUser: z.union([z.literal(""), z.string().trim().toLowerCase().email()]),
+  gmailAppPassword: z.string().max(100),
+  emailFromName: z.string().trim().max(100),
   organizerName: z.string().trim().min(1).max(200),
   outboxBatchSize: z.coerce.number().int().min(1).max(100),
   outboxDailyCap: z.coerce.number().int().min(1).max(2000),
@@ -93,16 +99,45 @@ const emailSettingsSchema = z.object({
 
 export async function saveEmailSettings(_prev: FormState, formData: FormData): Promise<FormState> {
   await requireUser();
-  const parsed = emailSettingsSchema.safeParse(Object.fromEntries(formData));
-  if (!parsed.success) return { error: "Valeurs invalides." };
-  await setSettings(parsed.data);
-  revalidatePath("/admin/parametres");
-  return { ok: "Réglages des emails enregistrés." };
+  const raw = Object.fromEntries(formData);
+  const parsed = emailSettingsSchema.safeParse({ ...raw, gmailUser: String(raw.gmailUser ?? "").trim() });
+  if (!parsed.success) {
+    return {
+      error: parsed.error.issues.some((i) => i.path[0] === "gmailUser")
+        ? "Adresse Gmail invalide."
+        : "Valeurs invalides.",
+    };
+  }
+  const { emailEnabled, gmailAppPassword, ...rest } = parsed.data;
+  const current = await getSettings();
+  // Google shows the app password in groups of 4 letters: spaces are not part of it.
+  const password = gmailAppPassword.replace(/\s+/g, "");
+  const next = {
+    ...rest,
+    emailEnabled: emailEnabled === "on",
+    gmailAppPasswordSealed: !rest.gmailUser
+      ? null
+      : password
+        ? seal(password)
+        : current.gmailAppPasswordSealed,
+  };
+  if (next.emailEnabled) {
+    const config = await emailConfig({ ...current, ...next });
+    if (config.mode === "none") return { error: `Impossible d’activer les emails : ${config.reason}` };
+  }
+  await setSettings(next);
+  revalidatePath("/admin", "layout");
+  return {
+    ok: next.emailEnabled
+      ? "Réglages enregistrés. Les emails sont activés."
+      : "Réglages enregistrés. Les emails sont désactivés.",
+  };
 }
 
 export async function sendTestEmail(): Promise<FormState> {
   const user = await requireUser();
   const settings = await getSettings();
+  if (!settings.emailEnabled) return { error: "Les emails sont désactivés." };
   await enqueueEmails(
     [{ to: user.email, template: "test", vars: { organisateur: settings.organizerName } }],
     {

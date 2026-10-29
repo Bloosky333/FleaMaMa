@@ -4,7 +4,7 @@ import { Alert, Card, LinkButton, PageHeader } from "@/components/ui";
 import { requireUser } from "@/lib/auth";
 import { expireOffers } from "@/lib/bookings-server";
 import { loadEditionBookings } from "@/lib/edition-bookings-server";
-import { getCurrentEdition } from "@/lib/editions";
+import { getCurrentEdition, getSettings } from "@/lib/editions";
 import { isSettled } from "@/lib/payments";
 import { formatEuros } from "@/lib/pricing";
 import { BookingsTable } from "./bookings-table";
@@ -75,6 +75,7 @@ export default async function BookingsPage() {
         </Card>
       </div>
       <BookingsTable
+        emailsEnabled={(await getSettings()).emailEnabled}
         rows={rows.map((r) => ({
           id: r.id,
           reference: r.reference,

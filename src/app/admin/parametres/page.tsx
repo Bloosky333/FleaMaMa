@@ -29,7 +29,7 @@ export default async function SettingsPage({ searchParams }: PageProps<"/admin/p
   const edition = all.find((e) => e.year === requested) ?? all.find((e) => e.status !== "closed") ?? null;
   const nextYear = Math.max(new Date().getFullYear(), ...all.map((e) => e.year + 1));
   const [grid, settings] = await Promise.all([edition ? loadTariffGrid(edition.id) : null, getSettings()]);
-  const mail = emailConfig();
+  const mail = await emailConfig(settings);
 
   return (
     <>
@@ -183,17 +183,51 @@ export default async function SettingsPage({ searchParams }: PageProps<"/admin/p
         <div className="space-y-6">
           <Card>
             <h2 className="mb-2 font-semibold">Envoi des emails</h2>
-            {mail.mode === "gmail" ? (
-              <Alert tone="green">Envoi via Gmail : {mail.user}</Alert>
+            {!settings.emailEnabled ? (
+              <Alert tone="amber">
+                Emails désactivés : l’application n’en crée aucun et les boutons d’envoi sont masqués.
+              </Alert>
+            ) : mail.mode === "gmail" ? (
+              <Alert tone="green">Emails activés, envoi via Gmail : {mail.user}</Alert>
             ) : mail.mode === "log" ? (
               <Alert tone="amber">Mode test : les emails ne sont pas réellement envoyés.</Alert>
             ) : (
-              <Alert tone="amber">
-                Gmail n’est pas configuré : les emails restent en file d’attente. Ajoutez GMAIL_USER et
-                GMAIL_APP_PASSWORD (voir le README).
-              </Alert>
+              <Alert tone="amber">{mail.reason} Les emails restent en file d’attente.</Alert>
             )}
             <ActionForm action={saveEmailSettings} className="mt-4 space-y-3">
+              <label className="flex items-center gap-2 text-sm font-medium">
+                <input type="checkbox" name="emailEnabled" defaultChecked={settings.emailEnabled} />
+                Emails activés
+              </label>
+              <Field
+                label="Adresse Gmail"
+                hint="Le compte qui envoie les emails ; les réponses des exposants y arrivent."
+              >
+                <Input name="gmailUser" type="email" autoComplete="off" defaultValue={settings.gmailUser} />
+              </Field>
+              <Field
+                label="Mot de passe d’application"
+                hint={
+                  settings.gmailUser && settings.gmailAppPasswordSealed
+                    ? "Enregistré. Laissez vide pour le garder, ou saisissez-en un nouveau."
+                    : "Compte Google → Sécurité → Mots de passe des applications (la validation en 2 étapes doit être activée). 16 lettres."
+                }
+              >
+                <Input
+                  name="gmailAppPassword"
+                  type="password"
+                  autoComplete="new-password"
+                  placeholder={
+                    settings.gmailUser && settings.gmailAppPasswordSealed ? "••••••••••••••••" : ""
+                  }
+                />
+              </Field>
+              <Field
+                label="Nom de l’expéditeur"
+                hint="Affiché dans la boîte de réception, ex. « Brocante de Limal »."
+              >
+                <Input name="emailFromName" defaultValue={settings.emailFromName} />
+              </Field>
               <Field label="Signature des emails">
                 <Input name="organizerName" defaultValue={settings.organizerName} />
               </Field>
@@ -207,12 +241,14 @@ export default async function SettingsPage({ searchParams }: PageProps<"/admin/p
               </div>
             </ActionForm>
             <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-stone-100 pt-4">
-              <ActionForm
-                action={sendTestEmail}
-                submitLabel="M’envoyer un email de test"
-                submitVariant="secondary"
-                className="space-y-2"
-              />
+              {settings.emailEnabled && (
+                <ActionForm
+                  action={sendTestEmail}
+                  submitLabel="M’envoyer un email de test"
+                  submitVariant="secondary"
+                  className="space-y-2"
+                />
+              )}
               <Link href="/admin/parametres/emails" className="text-brand-700 text-sm underline">
                 Modifier les textes des emails
               </Link>

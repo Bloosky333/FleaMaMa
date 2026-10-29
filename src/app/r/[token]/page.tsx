@@ -78,7 +78,9 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
             {edition.paymentInstructions}
           </p>
         )}
-        <p className="text-sm text-stone-600">Une confirmation vous a aussi été envoyée par email.</p>
+        {settings.emailEnabled && (
+          <p className="text-sm text-stone-600">Une confirmation vous a aussi été envoyée par email.</p>
+        )}
       </div>
     );
   } else if (booking.status === "requested" || booking.status === "waitlist") {
@@ -87,7 +89,10 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
       <div className="space-y-4">
         {justSent ? (
           <Alert tone="green">
-            Merci ! Votre demande est bien enregistrée. Un email de confirmation vous a été envoyé.
+            Merci ! Votre demande est bien enregistrée.
+            {settings.emailEnabled
+              ? " Un email de confirmation vous a été envoyé."
+              : " Ajoutez cette page à vos favoris : c’est votre lien personnel pour suivre votre demande."}
           </Alert>
         ) : booking.status === "waitlist" ? (
           <Alert tone="amber">

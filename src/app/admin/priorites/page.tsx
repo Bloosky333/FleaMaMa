@@ -4,7 +4,7 @@ import { Alert, Badge, Button, Card, PageHeader } from "@/components/ui";
 import { requireUser } from "@/lib/auth";
 import { expireOffers } from "@/lib/bookings-server";
 import { formatDateFr } from "@/lib/dates";
-import { getCurrentEdition } from "@/lib/editions";
+import { getCurrentEdition, getSettings } from "@/lib/editions";
 import { reasonLabels } from "@/lib/priorities";
 import { loadPriorityOverview } from "@/lib/priorities-server";
 import { prepareOffers, sendInvitations, settleConflict } from "./actions";
@@ -32,6 +32,7 @@ export default async function PrioritiesPage({ searchParams }: PageProps<"/admin
   }
   const expired = await expireOffers(edition.id);
   const o = await loadPriorityOverview(edition);
+  const { emailEnabled } = await getSettings();
   const waiting = o.offers.filter((x) => x.status === "offered");
   const notInvited = waiting.filter((x) => !x.invitation && x.contact.email).length;
   const invitedWaiting = waiting.filter((x) => x.invitation).length;
@@ -192,30 +193,42 @@ export default async function PrioritiesPage({ searchParams }: PageProps<"/admin
           <div>
             <h2 className="font-semibold">Offres {edition.year}</h2>
             <p className="text-sm text-stone-600">
-              Les invitations partent par petits lots via Gmail (voir{" "}
-              <Link href="/admin/emails" className="underline">
-                Emails
-              </Link>
-              ).
+              {emailEnabled ? (
+                <>
+                  Les invitations partent par petits lots via Gmail (voir{" "}
+                  <Link href="/admin/emails" className="underline">
+                    Emails
+                  </Link>
+                  ).
+                </>
+              ) : (
+                <>
+                  Emails désactivés : donnez à chacun son lien personnel (bouton « Lien », par SMS) ou
+                  confirmez pour lui après un appel.
+                </>
+              )}
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
-            <form action={sendInvitations.bind(null, "new", [])}>
-              <Button type="submit" disabled={notInvited === 0}>
-                Inviter ceux pas encore invités ({notInvited})
-              </Button>
-            </form>
-            <form action={sendInvitations.bind(null, "reminder", [])}>
-              <Button type="submit" variant="secondary" disabled={invitedWaiting === 0}>
-                Relancer ceux qui n’ont pas répondu ({invitedWaiting})
-              </Button>
-            </form>
-          </div>
+          {emailEnabled && (
+            <div className="flex flex-wrap gap-2">
+              <form action={sendInvitations.bind(null, "new", [])}>
+                <Button type="submit" disabled={notInvited === 0}>
+                  Inviter ceux pas encore invités ({notInvited})
+                </Button>
+              </form>
+              <form action={sendInvitations.bind(null, "reminder", [])}>
+                <Button type="submit" variant="secondary" disabled={invitedWaiting === 0}>
+                  Relancer ceux qui n’ont pas répondu ({invitedWaiting})
+                </Button>
+              </form>
+            </div>
+          )}
         </div>
         {o.offers.length === 0 ? (
           <p className="text-sm text-stone-500">Aucune offre préparée pour l’instant.</p>
         ) : (
           <OffersTable
+            emailsEnabled={emailEnabled}
             offers={o.offers.map((x) => ({
               ...x,
               offerExpiresAt: x.offerExpiresAt?.toISOString() ?? null,

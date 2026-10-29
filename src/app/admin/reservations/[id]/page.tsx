@@ -10,6 +10,7 @@ import { emailOutbox } from "@/db/schema";
 import { requireUser } from "@/lib/auth";
 import { bookingStatusLabels } from "@/lib/booking-labels";
 import { loadBooking } from "@/lib/bookings-server";
+import { getSettings } from "@/lib/editions";
 import { formatPhone } from "@/lib/contacts";
 import { displayName } from "@/lib/contacts";
 import { formatDateFr, todayBrussels } from "@/lib/dates";
@@ -28,7 +29,7 @@ export default async function BookingPage({ params }: PageProps<"/admin/reservat
   if (!Number.isInteger(id)) notFound();
   const b = await loadBooking(id);
   if (!b) notFound();
-  const [pays, mails] = await Promise.all([
+  const [pays, mails, { emailEnabled }] = await Promise.all([
     listPayments(id),
     db
       .select({
@@ -40,6 +41,7 @@ export default async function BookingPage({ params }: PageProps<"/admin/reservat
       .from(emailOutbox)
       .where(eq(emailOutbox.bookingId, id))
       .orderBy(desc(emailOutbox.id)),
+    getSettings(),
   ]);
   const paid = pays.reduce((t, p) => t + p.amountCents, 0);
   const state = paymentState(b.booking.amountDueCents, paid);
@@ -182,7 +184,7 @@ export default async function BookingPage({ params }: PageProps<"/admin/reservat
           {live && (
             <Card className="space-y-3">
               <h2 className="font-semibold">Actions</h2>
-              {b.booking.status === "confirmed" && b.contact.email && (
+              {emailEnabled && b.booking.status === "confirmed" && b.contact.email && (
                 <form action={resendConfirmation.bind(null, id)}>
                   <Button type="submit" variant="secondary">
                     Renvoyer l’email de confirmation

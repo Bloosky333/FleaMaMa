@@ -71,9 +71,11 @@ export default function StatusMap({
   plan,
   spots,
   previousYear,
+  emailsEnabled,
 }: {
   plan: { id: number; width: number; height: number };
   spots: MapSpot[];
+  emailsEnabled: boolean;
   previousYear: number | null;
 }) {
   const router = useRouter();
@@ -319,6 +321,7 @@ export default function StatusMap({
           key={selectedIds.join(",")}
           selected={selected}
           previousYear={previousYear}
+          emailsEnabled={emailsEnabled}
           onDone={() => router.refresh()}
         />
       </aside>
@@ -329,10 +332,12 @@ export default function StatusMap({
 function SpotPanel({
   selected,
   previousYear,
+  emailsEnabled,
   onDone,
 }: {
   selected: MapSpot[];
   previousYear: number | null;
+  emailsEnabled: boolean;
   onDone: () => void;
 }) {
   const [pending, start] = useTransition();
@@ -402,7 +407,7 @@ function SpotPanel({
         </div>
       )}
 
-      {free && <AssignForm spots={selected} onDone={onDone} />}
+      {free && <AssignForm spots={selected} emailsEnabled={emailsEnabled} onDone={onDone} />}
       {!free && !single && (
         <p className="text-stone-500">
           Pour attribuer plusieurs emplacements, sélectionnez uniquement des emplacements libres.
@@ -412,7 +417,15 @@ function SpotPanel({
   );
 }
 
-function AssignForm({ spots, onDone }: { spots: MapSpot[]; onDone: () => void }) {
+function AssignForm({
+  spots,
+  emailsEnabled,
+  onDone,
+}: {
+  spots: MapSpot[];
+  emailsEnabled: boolean;
+  onDone: () => void;
+}) {
   const [q, setQ] = useState("");
   const [results, setResults] = useState<{ id: number; name: string; city: string; hasEmail: boolean }[]>([]);
   const [chosen, setChosen] = useState<{ id: number; name: string; hasEmail: boolean } | null>(null);
@@ -477,15 +490,17 @@ function AssignForm({ spots, onDone }: { spots: MapSpot[]; onDone: () => void })
       )}
       {chosen && (
         <>
-          <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={notify && chosen.hasEmail}
-              disabled={!chosen.hasEmail}
-              onChange={(e) => setNotify(e.target.checked)}
-            />
-            Envoyer la confirmation par email{!chosen.hasEmail && " (pas d’email)"}
-          </label>
+          {emailsEnabled && (
+            <label className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                checked={notify && chosen.hasEmail}
+                disabled={!chosen.hasEmail}
+                onChange={(e) => setNotify(e.target.checked)}
+              />
+              Envoyer la confirmation par email{!chosen.hasEmail && " (pas d’email)"}
+            </label>
+          )}
           <Button
             type="button"
             disabled={pending}
@@ -494,7 +509,7 @@ function AssignForm({ spots, onDone }: { spots: MapSpot[]; onDone: () => void })
                 const res = await assignSpots(
                   spots.map((s) => s.id),
                   chosen.id,
-                  notify && chosen.hasEmail,
+                  emailsEnabled && notify && chosen.hasEmail,
                 );
                 if (res.error) setError(res.error);
                 else onDone();

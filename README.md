@@ -132,19 +132,25 @@ Useful scripts:
    - `ANTHROPIC_API_KEY` — optional, enables reading photos of the old software
      ([console.anthropic.com](https://console.anthropic.com); a few cents per photo)
    - `APP_URL` — the public address of the app (used in the links sent by email)
-   - `GMAIL_USER`, `GMAIL_APP_PASSWORD`, `EMAIL_FROM_NAME` — see *Emails with Gmail* below
    - `CRON_SECRET` — a long random string protecting the email sending job
 4. Open the Vercel URL: the first visit asks to create the first organiser account.
 
 ### Emails with Gmail
 
+Emails are configured in the app, under *Paramètres → Envoi des emails*, and are **off by default**.
+While they are off, the app creates no email at all and every send button is hidden (offers are
+then shared with the « Lien » button or confirmed by phone).
+
 1. On the Google account that will send the emails, turn on **2-Step Verification**.
 2. Create an **app password** (Google Account → Security → App passwords), name it "FleaMaMa".
-3. Set `GMAIL_USER` (the Gmail address), `GMAIL_APP_PASSWORD` (the 16 letters, without spaces) and
-   `EMAIL_FROM_NAME` (e.g. "Brocante de Limal") in Vercel, then redeploy.
-4. In the app: *Paramètres → M’envoyer un email de test*.
+3. In *Paramètres*, fill in the Gmail address, the app password (16 letters) and the sender name
+   (e.g. "Brocante de Limal"), tick **Emails activés** and save.
+4. Click *M’envoyer un email de test*.
 
-Replies from exhibitors arrive directly in that Gmail inbox.
+The app password is stored encrypted in the database with a key derived from `SESSION_SECRET`:
+if `SESSION_SECRET` changes, type the app password again. Replies from exhibitors arrive directly
+in that Gmail inbox. The older `GMAIL_USER` / `GMAIL_APP_PASSWORD` / `EMAIL_FROM_NAME` environment
+variables still work as a fallback when no Gmail address is set in the app.
 
 ### Sending emails in batches (scheduled job)
 

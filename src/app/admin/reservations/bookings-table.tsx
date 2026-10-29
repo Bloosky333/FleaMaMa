@@ -31,7 +31,7 @@ const paymentTone: Record<PaymentState, "green" | "amber" | "red" | "stone" | "b
   no_amount: "stone",
 };
 
-export function BookingsTable({ rows }: { rows: BookingRow[] }) {
+export function BookingsTable({ rows, emailsEnabled }: { rows: BookingRow[]; emailsEnabled: boolean }) {
   const router = useRouter();
   const [status, setStatus] = useState("confirmed");
   const [payment, setPayment] = useState("");
@@ -129,19 +129,21 @@ export function BookingsTable({ rows }: { rows: BookingRow[] }) {
           >
             Marquer payé (liquide)
           </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            disabled={pending || !unpaidSelected.length}
-            onClick={() =>
-              run(async () => {
-                const r = await sendPaymentReminders(unpaidSelected);
-                return `${r.queued} rappel(s) ajouté(s) à la file d’envoi.${r.noEmail ? ` ${r.noEmail} sans email.` : ""}`;
-              })
-            }
-          >
-            Envoyer un rappel de paiement
-          </Button>
+          {emailsEnabled && (
+            <Button
+              type="button"
+              variant="secondary"
+              disabled={pending || !unpaidSelected.length}
+              onClick={() =>
+                run(async () => {
+                  const r = await sendPaymentReminders(unpaidSelected);
+                  return `${r.queued} rappel(s) ajouté(s) à la file d’envoi.${r.noEmail ? ` ${r.noEmail} sans email.` : ""}`;
+                })
+              }
+            >
+              Envoyer un rappel de paiement
+            </Button>
+          )}
         </div>
       )}
       <div className="overflow-x-auto rounded-lg border border-stone-200 bg-white">

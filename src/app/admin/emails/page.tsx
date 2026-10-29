@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { desc, eq, sql } from "drizzle-orm";
 import { Alert, Button, Card, PageHeader } from "@/components/ui";
 import { db } from "@/db";
@@ -55,7 +56,8 @@ export default async function EmailsPage({ searchParams }: PageProps<"/admin/ema
       .orderBy(desc(emailOutbox.id))
       .limit(50),
   ]);
-  const mail = emailConfig();
+  const mail = await emailConfig(settings);
+  const enabled = settings.emailEnabled;
   const paused = settings.outboxPausedUntil && new Date(settings.outboxPausedUntil) > new Date();
   const eta = estimateDelay(counts.queued, sentToday, settings.outboxBatchSize, settings.outboxDailyCap);
 
@@ -65,21 +67,30 @@ export default async function EmailsPage({ searchParams }: PageProps<"/admin/ema
         title="Emails"
         description={`Envoi par lots de ${settings.outboxBatchSize}, au maximum ${settings.outboxDailyCap} par 24 h, pour rester sous les limites de Gmail.`}
         actions={
-          <form action={sendBatchNow}>
-            <Button type="submit" disabled={counts.queued === 0}>
-              Envoyer un lot maintenant
-            </Button>
-          </form>
+          enabled && (
+            <form action={sendBatchNow}>
+              <Button type="submit" disabled={counts.queued === 0}>
+                Envoyer un lot maintenant
+              </Button>
+            </form>
+          )
         }
       />
       <div className="mb-4 space-y-2">
         {typeof sp.info === "string" && <Alert tone="green">{sp.info}</Alert>}
-        {mail.mode === "none" && (
+        {!enabled && (
           <Alert tone="amber">
-            Gmail n’est pas configuré : les emails attendent dans la file (voir README).
+            Les emails sont désactivés (
+            <Link href="/admin/parametres" className="underline">
+              Paramètres
+            </Link>
+            ) : aucun nouvel email n’est créé ni envoyé.
           </Alert>
         )}
-        {mail.mode === "log" && (
+        {enabled && mail.mode === "none" && (
+          <Alert tone="amber">{mail.reason} Les emails attendent dans la file.</Alert>
+        )}
+        {enabled && mail.mode === "log" && (
           <Alert tone="amber">Mode test : les emails sont marqués envoyés sans partir.</Alert>
         )}
         {paused && (
@@ -117,7 +128,7 @@ export default async function EmailsPage({ searchParams }: PageProps<"/admin/ema
         <Card>
           <div className="text-sm text-stone-500">En échec</div>
           <div className="text-3xl font-semibold">{counts.failed}</div>
-          {counts.failed > 0 && (
+          {enabled && counts.failed > 0 && (
             <form action={retryFailedEmails}>
               <button className="text-brand-700 text-xs underline">Réessayer</button>
             </form>

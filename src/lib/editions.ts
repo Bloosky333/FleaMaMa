@@ -61,6 +61,12 @@ export type Settings = {
   /** ISO date until which sending is paused (after a Gmail error), or null. */
   outboxPausedUntil: string | null;
   outboxPauseReason: string | null;
+  /** Master switch: when off, no email is created and send buttons are hidden. */
+  emailEnabled: boolean;
+  /** Gmail account used to send; the app password is stored sealed (see secret-box). */
+  gmailUser: string;
+  gmailAppPasswordSealed: string | null;
+  emailFromName: string;
 };
 
 const DEFAULTS: Settings = {
@@ -69,6 +75,10 @@ const DEFAULTS: Settings = {
   outboxDailyCap: 300,
   outboxPausedUntil: null,
   outboxPauseReason: null,
+  emailEnabled: false,
+  gmailUser: "",
+  gmailAppPasswordSealed: null,
+  emailFromName: "",
 };
 
 export async function getSettings(): Promise<Settings> {

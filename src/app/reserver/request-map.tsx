@@ -20,12 +20,14 @@ export default function RequestMap({
   grid,
   today,
   earlyBirdDeadline,
+  emailsEnabled,
 }: {
   plan: { id: number; width: number; height: number };
   spots: PublicSpot[];
   grid: TariffGrid;
   today: string;
   earlyBirdDeadline: string | null;
+  emailsEnabled: boolean;
 }) {
   const image = usePlanImage(`/api/plan/image?v=${plan.id}`);
   const [containerRef, size] = useElementSize<HTMLDivElement>();
@@ -286,7 +288,14 @@ export default function RequestMap({
           <Field label="Téléphone *">
             <Input name="phone" type="tel" required autoComplete="tel" />
           </Field>
-          <Field label="Email *" hint="Pour recevoir la réponse et votre lien personnel.">
+          <Field
+            label="Email *"
+            hint={
+              emailsEnabled
+                ? "Pour recevoir la réponse et votre lien personnel."
+                : "Pour que l’organisateur puisse vous recontacter."
+            }
+          >
             <Input name="email" type="email" required autoComplete="email" />
           </Field>
         </div>
@@ -314,7 +323,8 @@ export default function RequestMap({
               : "Choisissez d’abord un emplacement"}
         </Button>
         <p className="text-xs text-stone-500">
-          Votre demande n’est pas encore une réservation : l’organisateur vous répondra par email.
+          Votre demande n’est pas encore une réservation : l’organisateur vous répondra
+          {emailsEnabled ? " par email." : "."}
         </p>
       </form>
     </div>

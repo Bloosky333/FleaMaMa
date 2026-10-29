@@ -236,10 +236,16 @@ to whom (the app pre-selects the relevant recipients, e.g. "14 offres non confir
 Only single transactional emails caused by an exhibitor's or organiser's action (#3, #5)
 go out on their own. All sent emails are logged on the contact (date, template, status).
 
+**On/off switch** ✅ — *Paramètres → Envoi des emails* holds the Gmail address, the app
+password (stored encrypted) and the sender name, plus an **« Emails activés »** switch, off by
+default. While it is off, the app creates no email at all (nothing is queued, not even
+transactional ones) and every send button is hidden; exhibitors use their personal link
+(given by the organiser, e.g. by SMS) and the public pages stop promising an email.
+
 **Sending via Gmail with batching** ✅
 
 - Through the organiser's **Gmail account via SMTP** (Google app password, 2-step
-  verification required). Replies land directly in his Gmail.
+  verification required), configured in *Paramètres*. Replies land directly in his Gmail.
 - Gmail limits (personal account): ~**500 recipients per rolling 24 h**, and bursts can
   trigger temporary blocks. So every email goes through an **outbox queue**:
   - one recipient per email (personalised, no CC/BCC lists);

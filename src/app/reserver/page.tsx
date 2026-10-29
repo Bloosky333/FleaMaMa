@@ -31,8 +31,10 @@ export default async function PublicRequestPage() {
               : "Les réservations ne sont pas ouvertes pour le moment."}
           </Alert>
           <p className="mt-3 text-sm text-stone-600">
-            Vous avez reçu un email avec un lien personnel ? Utilisez ce lien pour confirmer votre
-            emplacement.
+            {settings.emailEnabled
+              ? "Vous avez reçu un email avec un lien personnel ?"
+              : "Vous avez reçu un lien personnel ?"}{" "}
+            Utilisez ce lien pour confirmer votre emplacement.
           </p>
         </Card>
       ) : !map?.plan ? (
@@ -44,6 +46,7 @@ export default async function PublicRequestPage() {
           grid={map.grid}
           today={today}
           earlyBirdDeadline={edition.earlyBirdDeadline}
+          emailsEnabled={settings.emailEnabled}
         />
       )}
       <footer className="mt-10 flex justify-between text-xs text-stone-500">

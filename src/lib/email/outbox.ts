@@ -5,7 +5,7 @@ import { emailCampaigns, emailOutbox, emailTemplates } from "@/db/schema";
 import { getSettings, setSettings } from "../editions";
 import { DEFAULT_TEMPLATES, renderTemplate, type Template, type TemplateKey } from "./templates";
 import { isQuotaError } from "./schedule";
-import { emailConfig, sendMail } from "./transport";
+import { createMailer, emailConfig } from "./transport";
 
 /** Transactional emails (a confirmation the exhibitor waits for) go before bulk ones. */
 export const PRIORITY_TRANSACTIONAL = 0;
@@ -26,7 +26,10 @@ export type OutgoingEmail = {
   bookingId?: number | null;
 };
 
-/** Renders and queues emails. Returns the campaign id when `campaign` is set. */
+/**
+ * Renders and queues emails. Returns the campaign id when `campaign` is set. Does nothing when
+ * emails are switched off in Paramètres: no email is created at all.
+ */
 export async function enqueueEmails(
   emails: OutgoingEmail[],
   opts: {
@@ -34,7 +37,7 @@ export async function enqueueEmails(
     campaign?: { editionId: number | null; template: TemplateKey; createdBy: number };
   } = {},
 ): Promise<number | null> {
-  if (!emails.length) return null;
+  if (!emails.length || !(await getSettings()).emailEnabled) return null;
   const templates = new Map<TemplateKey, Template>();
   for (const key of new Set(emails.map((e) => e.template))) templates.set(key, await loadTemplate(key));
 
@@ -87,8 +90,10 @@ export type ProcessResult = { sent: number; failed: number; skipped?: string };
  * Called by the scheduled job, by the "send now" button and right after a confirmation.
  */
 export async function processOutbox(): Promise<ProcessResult> {
-  if (emailConfig().mode === "none") return { sent: 0, failed: 0, skipped: "Envoi d’emails non configuré" };
   const settings = await getSettings();
+  if (!settings.emailEnabled) return { sent: 0, failed: 0, skipped: "Envoi des emails désactivé" };
+  const config = await emailConfig(settings);
+  if (config.mode === "none") return { sent: 0, failed: 0, skipped: config.reason.replace(/\.$/, "") };
   if (settings.outboxPausedUntil && new Date(settings.outboxPausedUntil) > new Date()) {
     return { sent: 0, failed: 0, skipped: "En pause" };
   }
@@ -126,6 +131,7 @@ export async function processOutbox(): Promise<ProcessResult> {
 
   let sent = 0;
   let failed = 0;
+  const sendMail = createMailer(config);
   const rows = [...claimed].sort((a, b) => a.id - b.id);
   for (const [i, m] of rows.entries()) {
     try {

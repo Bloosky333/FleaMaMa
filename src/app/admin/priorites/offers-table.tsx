@@ -44,7 +44,7 @@ const invitationLabel: Record<string, string> = {
   failed: "échec d’envoi",
 };
 
-export function OffersTable({ offers }: { offers: OfferRow[] }) {
+export function OffersTable({ offers, emailsEnabled }: { offers: OfferRow[]; emailsEnabled: boolean }) {
   const [selected, setSelected] = useState<number[]>([]);
   const [filter, setFilter] = useState<"all" | "offered" | "confirmed" | "closed">("all");
   const [link, setLink] = useState<{ id: number; url: string } | null>(null);
@@ -93,7 +93,7 @@ export function OffersTable({ offers }: { offers: OfferRow[] }) {
             )
           </button>
         ))}
-        {selected.length > 0 && (
+        {emailsEnabled && selected.length > 0 && (
           <Button
             type="button"
             disabled={pending}
@@ -108,35 +108,39 @@ export function OffersTable({ offers }: { offers: OfferRow[] }) {
         <table className="w-full text-sm">
           <thead className="border-b border-stone-200 bg-stone-50 text-left text-xs text-stone-500 uppercase">
             <tr>
-              <th className="px-3 py-2">
-                <input
-                  type="checkbox"
-                  aria-label="Tout sélectionner"
-                  checked={selectable.length > 0 && selectable.every((o) => selected.includes(o.id))}
-                  onChange={(e) => setSelected(e.target.checked ? selectable.map((o) => o.id) : [])}
-                />
-              </th>
+              {emailsEnabled && (
+                <th className="px-3 py-2">
+                  <input
+                    type="checkbox"
+                    aria-label="Tout sélectionner"
+                    checked={selectable.length > 0 && selectable.every((o) => selected.includes(o.id))}
+                    onChange={(e) => setSelected(e.target.checked ? selectable.map((o) => o.id) : [])}
+                  />
+                </th>
+              )}
               <th className="px-3 py-2">N°</th>
               <th className="px-3 py-2">Exposant</th>
               <th className="px-3 py-2">Priorité</th>
               <th className="px-3 py-2">État</th>
-              <th className="px-3 py-2">Invitation</th>
+              {emailsEnabled && <th className="px-3 py-2">Invitation</th>}
               <th className="px-3 py-2">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-stone-100">
             {shown.map((o) => (
               <tr key={o.id} className="align-top">
-                <td className="px-3 py-2">
-                  {o.status === "offered" && (
-                    <input
-                      type="checkbox"
-                      aria-label={`Sélectionner ${o.contact.name}`}
-                      checked={selected.includes(o.id)}
-                      onChange={() => toggle(o.id)}
-                    />
-                  )}
-                </td>
+                {emailsEnabled && (
+                  <td className="px-3 py-2">
+                    {o.status === "offered" && (
+                      <input
+                        type="checkbox"
+                        aria-label={`Sélectionner ${o.contact.name}`}
+                        checked={selected.includes(o.id)}
+                        onChange={() => toggle(o.id)}
+                      />
+                    )}
+                  </td>
+                )}
                 <td className="px-3 py-2 font-semibold whitespace-nowrap">
                   {o.spots.join(", ") || "—"}
                   {o.releasedSpots.length > 0 && (
@@ -179,14 +183,16 @@ export function OffersTable({ offers }: { offers: OfferRow[] }) {
                     <div className="text-xs text-stone-500">{formatEuros(o.amountDueCents)}</div>
                   )}
                 </td>
-                <td className="px-3 py-2 text-xs">
-                  {o.invitation ? (
-                    invitationLabel[o.invitation]
-                  ) : (
-                    <span className="text-stone-400">pas envoyée</span>
-                  )}
-                  {o.reminders > 0 && <div className="text-stone-500">{o.reminders} rappel(s)</div>}
-                </td>
+                {emailsEnabled && (
+                  <td className="px-3 py-2 text-xs">
+                    {o.invitation ? (
+                      invitationLabel[o.invitation]
+                    ) : (
+                      <span className="text-stone-400">pas envoyée</span>
+                    )}
+                    {o.reminders > 0 && <div className="text-stone-500">{o.reminders} rappel(s)</div>}
+                  </td>
+                )}
                 <td className="px-3 py-2">
                   {o.status === "offered" && (
                     <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs">
@@ -281,7 +287,7 @@ export function OffersTable({ offers }: { offers: OfferRow[] }) {
             ))}
             {shown.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-3 py-6 text-center text-stone-500">
+                <td colSpan={emailsEnabled ? 7 : 5} className="px-3 py-6 text-center text-stone-500">
                   Aucune offre.
                 </td>
               </tr>

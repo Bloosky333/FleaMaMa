@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireUser } from "@/lib/auth";
 import { processOutbox, resumeOutbox, retryFailed } from "@/lib/email/outbox";
+import { emailsEnabled } from "@/lib/email/transport";
 
 export async function sendBatchNow() {
   await requireUser();
@@ -23,6 +24,7 @@ export async function resumeSending() {
 
 export async function retryFailedEmails() {
   await requireUser();
+  if (!(await emailsEnabled())) return;
   await retryFailed();
   revalidatePath("/admin/emails");
 }
