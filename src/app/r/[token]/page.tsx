@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { PublicShell } from "@/components/public-shell";
 import { Alert, Card } from "@/components/ui";
 import { expireOffers, loadBooking } from "@/lib/bookings-server";
 import { formatDateFr, todayBrussels } from "@/lib/dates";
@@ -127,18 +128,14 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
   }
 
   return (
-    <main className="mx-auto max-w-xl px-4 py-8">
-      <p className="text-sm text-slate-500">Brocante {edition.year}</p>
-      <h1 className="mb-1 text-2xl font-semibold">
-        Bonjour {contact.firstName || contact.lastName || contact.company}
-      </h1>
-      {edition.marketDate && (
-        <p className="mb-6 text-slate-600">
-          La brocante aura lieu le {formatDateFr(edition.marketDate, true)}.
-        </p>
-      )}
-      <Card className="p-5">{content}</Card>
-      <p className="mt-6 text-center text-xs text-slate-500">{settings.organizerName}</p>
-    </main>
+    <PublicShell
+      name={settings.organizerName}
+      width="max-w-2xl"
+      eyebrow={`Brocante ${edition.year}`}
+      title={`Bonjour ${contact.firstName || contact.lastName || contact.company}`}
+      subtitle={edition.marketDate && `La brocante aura lieu le ${formatDateFr(edition.marketDate, true)}.`}
+    >
+      <Card className="p-6">{content}</Card>
+    </PublicShell>
   );
 }

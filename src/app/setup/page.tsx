@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
-import { Card } from "@/components/ui";
+import { AuthShell } from "@/components/public-shell";
 import { hasAnyUser } from "@/lib/auth";
 import { SetupForm } from "../login/auth-forms";
 
@@ -11,14 +11,11 @@ export default async function SetupPage() {
   await connection(); // depends on the database, never prerender
   if (await hasAnyUser()) redirect("/login");
   return (
-    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-4">
-      <h1 className="mb-1 text-2xl font-semibold">Bienvenue sur FleaMaMa</h1>
-      <p className="mb-6 text-sm text-slate-600">
-        Créez le premier compte organisateur. Vous pourrez ajouter d’autres organisateurs ensuite.
-      </p>
-      <Card>
-        <SetupForm />
-      </Card>
-    </main>
+    <AuthShell
+      title="Bienvenue sur FleaMaMa"
+      subtitle="Créez le premier compte organisateur. Vous pourrez ajouter d’autres organisateurs ensuite."
+    >
+      <SetupForm />
+    </AuthShell>
   );
 }

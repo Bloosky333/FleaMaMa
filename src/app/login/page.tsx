@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
-import { Card } from "@/components/ui";
+import { AuthShell } from "@/components/public-shell";
 import { getCurrentUser, hasAnyUser } from "@/lib/auth";
 import { LoginForm } from "./auth-forms";
 
@@ -12,12 +12,8 @@ export default async function LoginPage() {
   if (!(await hasAnyUser())) redirect("/setup");
   if (await getCurrentUser()) redirect("/admin");
   return (
-    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center px-4">
-      <h1 className="mb-1 text-2xl font-semibold">FleaMaMa</h1>
-      <p className="mb-6 text-sm text-slate-600">Espace organisateurs</p>
-      <Card>
-        <LoginForm />
-      </Card>
-    </main>
+    <AuthShell title="FleaMaMa" subtitle="Espace organisateurs">
+      <LoginForm />
+    </AuthShell>
   );
 }

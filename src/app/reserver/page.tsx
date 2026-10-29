@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { connection } from "next/server";
+import { PublicShell } from "@/components/public-shell";
 import { Alert, Card } from "@/components/ui";
 import { formatDateFr, todayBrussels } from "@/lib/dates";
 import { getCurrentEdition, getSettings } from "@/lib/editions";
@@ -18,11 +18,17 @@ export default async function PublicRequestPage() {
   const map = edition && open ? await loadPublicMap(edition) : null;
 
   return (
-    <main className="mx-auto max-w-4xl px-4 py-8">
-      <h1 className="text-2xl font-semibold">Brocante {edition?.year ?? ""}</h1>
-      {edition?.marketDate && (
-        <p className="mb-6 text-slate-600">Le {formatDateFr(edition.marketDate, true)}.</p>
-      )}
+    <PublicShell
+      name={settings.organizerName}
+      eyebrow={
+        <>
+          <span className={`size-2 rounded-full ${open ? "bg-green-500" : "bg-slate-400"}`} />
+          {open ? "Réservations ouvertes" : "Réservations fermées"}
+        </>
+      }
+      title={`Brocante ${edition?.year ?? ""}`}
+      subtitle={edition?.marketDate && `Le ${formatDateFr(edition.marketDate, true)}.`}
+    >
       {!edition || !open ? (
         <Card>
           <Alert tone="amber">
@@ -49,12 +55,6 @@ export default async function PublicRequestPage() {
           emailsEnabled={settings.emailEnabled}
         />
       )}
-      <footer className="mt-10 flex justify-between text-xs text-slate-500">
-        <span>{settings.organizerName}</span>
-        <Link href="/admin" className="underline">
-          Espace organisateurs
-        </Link>
-      </footer>
-    </main>
+    </PublicShell>
   );
 }

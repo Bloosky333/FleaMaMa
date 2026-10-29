@@ -70,8 +70,13 @@ export default function RequestMap({
 
   return (
     <div className="space-y-6">
-      <section className="space-y-3">
-        <h2 className="text-lg font-semibold">1. Choisissez vos emplacements</h2>
+      <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_24px_48px_-32px_rgb(15_23_42/0.35)] md:p-6">
+        <h2 className="font-display text-xl font-bold">
+          <span className="bg-brand-600 mr-2 inline-flex size-7 items-center justify-center rounded-full align-[2px] text-sm text-white">
+            1
+          </span>
+          Choisissez vos emplacements
+        </h2>
         <p className="text-sm text-slate-600">
           Touchez un emplacement vert pour l’ajouter à votre 1er choix. Vous pouvez aussi indiquer un 2e et un
           3e choix au cas où le premier serait déjà attribué. {freeCount} emplacement(s) libre(s).
@@ -82,7 +87,7 @@ export default function RequestMap({
               key={i}
               type="button"
               onClick={() => setActive(i)}
-              className={`rounded-md border-2 px-3 py-2 text-left text-sm ${active === i ? "bg-white shadow" : "border-transparent bg-slate-100"}`}
+              className={`rounded-xl border-2 px-3 py-2 text-left text-sm transition ${active === i ? "bg-white shadow-md" : "border-transparent bg-slate-100 hover:bg-slate-200"}`}
               style={{ borderColor: active === i ? CHOICE_COLORS[i] : undefined }}
             >
               <span className="font-semibold" style={{ color: CHOICE_COLORS[i] }}>
@@ -122,7 +127,7 @@ export default function RequestMap({
         </div>
         <div
           ref={containerRef}
-          className="relative h-[60vh] min-h-[360px] overflow-hidden rounded-lg border border-slate-300 bg-slate-200"
+          className="relative h-[60vh] min-h-[360px] overflow-hidden rounded-xl border border-slate-200 bg-slate-100"
         >
           {size.width > 0 && view && (
             <Stage
@@ -239,8 +244,16 @@ export default function RequestMap({
         </p>
       </section>
 
-      <form action={action} className="space-y-4">
-        <h2 className="text-lg font-semibold">2. Vos coordonnées</h2>
+      <form
+        action={action}
+        className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_24px_48px_-32px_rgb(15_23_42/0.35)] md:p-6"
+      >
+        <h2 className="font-display text-xl font-bold">
+          <span className="bg-brand-600 mr-2 inline-flex size-7 items-center justify-center rounded-full align-[2px] text-sm text-white">
+            2
+          </span>
+          Vos coordonnées
+        </h2>
         {state?.error && <Alert>{state.error}</Alert>}
         <input type="hidden" name="choices" value={JSON.stringify(filled)} />
         <input type="text" name="website" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
