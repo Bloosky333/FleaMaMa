@@ -112,21 +112,21 @@ export default async function EmailsPage({ searchParams }: PageProps<"/admin/ema
       </div>
       <div className="mb-6 grid gap-4 sm:grid-cols-4">
         <Card>
-          <div className="text-sm text-stone-500">En file</div>
+          <div className="text-sm text-slate-500">En file</div>
           <div className="text-3xl font-semibold">{counts.queued + counts.sending}</div>
-          <div className="text-xs text-stone-500">{eta}</div>
+          <div className="text-xs text-slate-500">{eta}</div>
         </Card>
         <Card>
-          <div className="text-sm text-stone-500">Envoyés (24 h)</div>
+          <div className="text-sm text-slate-500">Envoyés (24 h)</div>
           <div className="text-3xl font-semibold">{sentToday}</div>
-          <div className="text-xs text-stone-500">sur {settings.outboxDailyCap} max</div>
+          <div className="text-xs text-slate-500">sur {settings.outboxDailyCap} max</div>
         </Card>
         <Card>
-          <div className="text-sm text-stone-500">Envoyés au total</div>
+          <div className="text-sm text-slate-500">Envoyés au total</div>
           <div className="text-3xl font-semibold">{counts.sent}</div>
         </Card>
         <Card>
-          <div className="text-sm text-stone-500">En échec</div>
+          <div className="text-sm text-slate-500">En échec</div>
           <div className="text-3xl font-semibold">{counts.failed}</div>
           {enabled && counts.failed > 0 && (
             <form action={retryFailedEmails}>
@@ -139,7 +139,7 @@ export default async function EmailsPage({ searchParams }: PageProps<"/admin/ema
         <Card>
           <h2 className="mb-3 font-semibold">Envois groupés</h2>
           {campaigns.length === 0 ? (
-            <p className="text-sm text-stone-500">Aucun envoi groupé.</p>
+            <p className="text-sm text-slate-500">Aucun envoi groupé.</p>
           ) : (
             <ul className="space-y-3">
               {campaigns.map((c) => (
@@ -148,15 +148,15 @@ export default async function EmailsPage({ searchParams }: PageProps<"/admin/ema
                     <span className="font-medium">
                       {TEMPLATE_INFO[c.template as TemplateKey]?.label ?? c.template}
                     </span>
-                    <span className="text-stone-500">{c.createdAt.toLocaleDateString("fr-BE")}</span>
+                    <span className="text-slate-500">{c.createdAt.toLocaleDateString("fr-BE")}</span>
                   </div>
-                  <div className="mt-1 h-2 overflow-hidden rounded bg-stone-100">
+                  <div className="mt-1 h-2 overflow-hidden rounded bg-slate-100">
                     <div
                       className="bg-brand-500 h-2"
                       style={{ width: `${c.total ? (100 * c.sent) / c.total : 0}%` }}
                     />
                   </div>
-                  <div className="text-xs text-stone-500">
+                  <div className="text-xs text-slate-500">
                     {c.sent} / {c.total} envoyés{c.failed ? `, ${c.failed} en échec` : ""}
                   </div>
                 </li>
@@ -167,11 +167,11 @@ export default async function EmailsPage({ searchParams }: PageProps<"/admin/ema
         <Card className="overflow-x-auto">
           <h2 className="mb-3 font-semibold">Derniers emails</h2>
           <table className="w-full text-sm">
-            <tbody className="divide-y divide-stone-100">
+            <tbody className="divide-y divide-slate-100">
               {recent.map((m) => (
                 <tr key={m.id}>
                   <td className="py-1.5 pr-3">{m.to}</td>
-                  <td className="py-1.5 pr-3 text-stone-600">{m.subject}</td>
+                  <td className="py-1.5 pr-3 text-slate-600">{m.subject}</td>
                   <td className="py-1.5 text-xs whitespace-nowrap" title={m.lastError ?? undefined}>
                     <span
                       className={

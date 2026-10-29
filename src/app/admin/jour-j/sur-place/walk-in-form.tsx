@@ -24,17 +24,17 @@ export function WalkInForm({
       {state?.ok && <Alert tone="green">{state.ok}</Alert>}
       <fieldset>
         <legend className="mb-2 text-sm font-medium">Emplacement(s) libre(s)</legend>
-        {free.length === 0 && <p className="text-sm text-stone-500">Plus aucun emplacement libre.</p>}
+        {free.length === 0 && <p className="text-sm text-slate-500">Plus aucun emplacement libre.</p>}
         {streets.map((street) => (
           <div key={street} className="mb-2">
-            <div className="text-xs text-stone-500">{street}</div>
+            <div className="text-xs text-slate-500">{street}</div>
             <div className="flex flex-wrap gap-1.5">
               {free
                 .filter((s) => (s.street || "Sans rue") === street)
                 .map((s) => (
                   <label
                     key={s.id}
-                    className={`cursor-pointer rounded-md border px-3 py-2 text-sm font-semibold ${chosen.includes(s.id) ? "border-brand-600 bg-brand-600 text-white" : "border-stone-300 bg-white"}`}
+                    className={`cursor-pointer rounded-md border px-3 py-2 text-sm font-semibold ${chosen.includes(s.id) ? "border-brand-600 bg-brand-600 text-white" : "border-slate-300 bg-white"}`}
                   >
                     <input
                       type="checkbox"

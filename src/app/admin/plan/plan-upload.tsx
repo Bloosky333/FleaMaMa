@@ -89,7 +89,7 @@ export function PlanUpload({ hasPlan }: { hasPlan: boolean }) {
 
   return (
     <div className="space-y-4">
-      <div className="text-sm text-stone-600">
+      <div className="text-sm text-slate-600">
         Photographiez ou scannez le plan papier (bien à plat, sans reflet), puis choisissez le fichier.
         {hasPlan && " Les emplacements déjà placés sont conservés et suivent le nouveau plan."}
       </div>
@@ -114,7 +114,7 @@ export function PlanUpload({ hasPlan }: { hasPlan: boolean }) {
               <input type="checkbox" checked={contrast} onChange={(e) => setContrast(e.target.checked)} />
               Améliorer le contraste
             </label>
-            <span className="text-xs text-stone-500">
+            <span className="text-xs text-slate-500">
               {prepared.width}×{prepared.height} px · {(prepared.blob.size / 1024 / 1024).toFixed(1)} Mo
             </span>
           </div>
@@ -122,7 +122,7 @@ export function PlanUpload({ hasPlan }: { hasPlan: boolean }) {
           <img
             src={prepared.url}
             alt="Aperçu du plan"
-            className="max-h-[60vh] border border-stone-200 bg-white"
+            className="max-h-[60vh] border border-slate-200 bg-white"
           />
           <Button type="button" onClick={submit} disabled={pending}>
             {pending ? "Envoi…" : hasPlan ? "Remplacer le plan" : "Utiliser ce plan"}

@@ -50,14 +50,14 @@ export default async function ImportListPage({ searchParams }: PageProps<"/admin
             </Field>
             <Button type="submit">Commencer</Button>
           </form>
-          <p className="mt-4 text-xs text-stone-500">
+          <p className="mt-4 text-xs text-slate-500">
             Conseil : placez d’abord tous les emplacements sur le plan, l’import vérifie que chaque numéro
             existe.
           </p>
         </Card>
         <Card className="overflow-x-auto p-0">
           <table className="w-full text-sm">
-            <thead className="border-b border-stone-200 bg-stone-50 text-left text-xs text-stone-500 uppercase">
+            <thead className="border-b border-slate-200 bg-slate-50 text-left text-xs text-slate-500 uppercase">
               <tr>
                 <th className="px-4 py-2">Année</th>
                 <th className="px-4 py-2">Lignes</th>
@@ -65,7 +65,7 @@ export default async function ImportListPage({ searchParams }: PageProps<"/admin
                 <th className="px-4 py-2">Créée le</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-stone-100">
+            <tbody className="divide-y divide-slate-100">
               {batches.map((b) => (
                 <tr key={b.id}>
                   <td className="px-4 py-2 font-medium">
@@ -86,7 +86,7 @@ export default async function ImportListPage({ searchParams }: PageProps<"/admin
               ))}
               {batches.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-4 py-8 text-center text-stone-500">
+                  <td colSpan={4} className="px-4 py-8 text-center text-slate-500">
                     Aucune reprise pour l’instant.
                   </td>
                 </tr>

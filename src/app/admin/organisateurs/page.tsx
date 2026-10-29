@@ -19,11 +19,11 @@ export default async function UsersPage() {
       <PageHeader title="Organisateurs" description="Tous les organisateurs ont accès à tout." />
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
-          <ul className="divide-y divide-stone-100">
+          <ul className="divide-y divide-slate-100">
             {rows.map((u) => (
               <li key={u.id} className="py-2 text-sm">
                 <span className="font-medium">{u.name}</span>{" "}
-                <span className="text-stone-500">{u.email}</span>
+                <span className="text-slate-500">{u.email}</span>
               </li>
             ))}
           </ul>

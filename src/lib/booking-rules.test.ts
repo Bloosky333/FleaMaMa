@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { addDaysIso, endOfDayBrussels, formatDateFr, todayBrussels } from "./dates";
+import {
+  addDaysIso,
+  daysBetween,
+  endOfDayBrussels,
+  formatDateFr,
+  formatShortDayFr,
+  todayBrussels,
+} from "./dates";
 import { estimateDelay, isQuotaError } from "./email/schedule";
 import { DEFAULT_TEMPLATES, renderTemplate } from "./email/templates";
 import { paymentState } from "./payments";
@@ -18,6 +25,11 @@ describe("dates", () => {
     expect(formatDateFr("2027-05-01")).toBe("1er mai 2027");
     expect(formatDateFr("2027-05-01", true)).toBe("samedi 1er mai 2027");
     expect(formatDateFr("2027-06-13", true)).toBe("dimanche 13 juin 2027");
+    expect(formatShortDayFr("2027-06-13")).toBe("dim. 13 juin");
+  });
+  it("counts days across a DST change", () => {
+    expect(daysBetween("2027-03-20", "2027-04-02")).toBe(13);
+    expect(daysBetween("2027-06-13", "2027-06-06")).toBe(-7);
   });
 });
 

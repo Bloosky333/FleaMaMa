@@ -97,11 +97,11 @@ export function BookingsTable({ rows, emailsEnabled }: { rows: BookingRow[]; ema
             </option>
           ))}
         </Select>
-        <span className="text-sm text-stone-500">{shown.length} réservation(s)</span>
+        <span className="text-sm text-slate-500">{shown.length} réservation(s)</span>
       </div>
       {message && <Alert tone="green">{message}</Alert>}
       {selected.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2 rounded-md bg-stone-100 p-2 text-sm">
+        <div className="flex flex-wrap items-center gap-2 rounded-md bg-slate-100 p-2 text-sm">
           <span>{selected.length} sélectionnée(s)</span>
           <Button
             type="button"
@@ -146,9 +146,9 @@ export function BookingsTable({ rows, emailsEnabled }: { rows: BookingRow[]; ema
           )}
         </div>
       )}
-      <div className="overflow-x-auto rounded-lg border border-stone-200 bg-white">
+      <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
         <table className="w-full text-sm">
-          <thead className="border-b border-stone-200 bg-stone-50 text-left text-xs text-stone-500 uppercase">
+          <thead className="border-b border-slate-200 bg-slate-50 text-left text-xs text-slate-500 uppercase">
             <tr>
               <th className="px-3 py-2">
                 <input
@@ -166,7 +166,7 @@ export function BookingsTable({ rows, emailsEnabled }: { rows: BookingRow[]; ema
               <th className="px-3 py-2" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-stone-100">
+          <tbody className="divide-y divide-slate-100">
             {shown.map((r) => (
               <tr key={r.id}>
                 <td className="px-3 py-2">
@@ -181,7 +181,7 @@ export function BookingsTable({ rows, emailsEnabled }: { rows: BookingRow[]; ema
                 </td>
                 <td className="px-3 py-2 font-semibold whitespace-nowrap">
                   {joinLabels(r.spots.map((s) => s.label)) || "—"}
-                  <div className="text-xs font-normal text-stone-500">{r.spots[0]?.street}</div>
+                  <div className="text-xs font-normal text-slate-500">{r.spots[0]?.street}</div>
                 </td>
                 <td className="px-3 py-2">
                   <Link
@@ -190,7 +190,7 @@ export function BookingsTable({ rows, emailsEnabled }: { rows: BookingRow[]; ema
                   >
                     {r.contact.name}
                   </Link>
-                  <div className="text-xs text-stone-500">
+                  <div className="text-xs text-slate-500">
                     {r.reference}
                     {r.contact.phone && ` · ${formatPhone(r.contact.phone)}`}
                     {r.contact.kind === "pro" && " · pro"}
@@ -203,7 +203,7 @@ export function BookingsTable({ rows, emailsEnabled }: { rows: BookingRow[]; ema
                     <Badge tone={paymentTone[r.payment]}>{paymentStateLabels[r.payment]}</Badge>
                   )}
                   {r.paidCents !== 0 && (
-                    <div className="text-xs text-stone-500">reçu {formatEuros(r.paidCents)}</div>
+                    <div className="text-xs text-slate-500">reçu {formatEuros(r.paidCents)}</div>
                   )}
                 </td>
                 <td className="px-3 py-2 text-xs whitespace-nowrap">
@@ -235,7 +235,7 @@ export function BookingsTable({ rows, emailsEnabled }: { rows: BookingRow[]; ema
             ))}
             {shown.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-3 py-6 text-center text-stone-500">
+                <td colSpan={7} className="px-3 py-6 text-center text-slate-500">
                   Aucune réservation.
                 </td>
               </tr>

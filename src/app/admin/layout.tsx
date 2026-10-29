@@ -1,22 +1,40 @@
+import { and, eq, sql } from "drizzle-orm";
+import { db } from "@/db";
+import { bookings } from "@/db/schema";
 import { requireUser } from "@/lib/auth";
-import { logout } from "../login/actions";
-import { AdminNav } from "./nav";
+import { daysBetween, formatShortDayFr, todayBrussels } from "@/lib/dates";
+import { getCurrentEdition } from "@/lib/editions";
+import { MobileNav, type NavContext, Sidebar, TopBar } from "./nav";
 
 export default async function AdminLayout({ children }: LayoutProps<"/admin">) {
-  const user = await requireUser();
+  const [user, edition] = await Promise.all([requireUser(), getCurrentEdition()]);
+  const [pending] = edition
+    ? await db
+        .select({ n: sql<number>`count(*)::int` })
+        .from(bookings)
+        .where(and(eq(bookings.editionId, edition.id), eq(bookings.status, "requested")))
+    : [{ n: 0 }];
+
+  const ctx: NavContext = {
+    userName: user.name,
+    edition: edition && {
+      year: edition.year,
+      marketDay: edition.marketDate ? formatShortDayFr(edition.marketDate) : null,
+      daysLeft: edition.marketDate ? daysBetween(todayBrussels(), edition.marketDate) : null,
+    },
+    pendingRequests: pending.n,
+  };
+
   return (
     <div className="min-h-screen md:flex">
-      <aside className="border-b border-stone-200 bg-white p-3 md:sticky md:top-0 md:h-screen md:w-56 md:shrink-0 md:border-r md:border-b-0 print:hidden">
-        <div className="mb-3 flex items-center justify-between px-3 md:block">
-          <div className="text-brand-700 text-lg font-semibold">FleaMaMa</div>
-          <form action={logout} className="md:mt-1">
-            <span className="mr-2 text-xs text-stone-500 md:block">{user.name}</span>
-            <button className="text-xs text-stone-500 underline hover:text-stone-800">Se déconnecter</button>
-          </form>
-        </div>
-        <AdminNav />
-      </aside>
-      <main className="min-w-0 flex-1 p-4 md:p-8 print:p-0">{children}</main>
+      <Sidebar ctx={ctx} />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <TopBar ctx={ctx} />
+        <main className="w-full max-w-7xl flex-1 p-4 pb-24 md:p-8 print:max-w-none print:p-0">
+          {children}
+        </main>
+      </div>
+      <MobileNav ctx={ctx} />
     </div>
   );
 }

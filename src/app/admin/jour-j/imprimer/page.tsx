@@ -67,7 +67,7 @@ export default async function PrintPage() {
             />{" "}
             libre
           </p>
-          <svg viewBox={`0 0 ${plan.width} ${plan.height}`} className="h-auto w-full border border-stone-300">
+          <svg viewBox={`0 0 ${plan.width} ${plan.height}`} className="h-auto w-full border border-slate-300">
             <image href={`/api/plan/image?v=${plan.id}`} width={plan.width} height={plan.height} />
             {allSpots
               .filter((s) => s.active)
@@ -112,7 +112,7 @@ export default async function PrintPage() {
             <thead>
               <tr className="text-left">
                 {["N°", "Exposant", "Téléphone", "À encaisser", "Présent"].map((h) => (
-                  <th key={h} className="border border-stone-400 px-2 py-1">
+                  <th key={h} className="border border-slate-400 px-2 py-1">
                     {h}
                   </th>
                 ))}
@@ -128,17 +128,17 @@ export default async function PrintPage() {
                       : 0;
                   return (
                     <tr key={spot.id}>
-                      <td className="border border-stone-400 px-2 py-1 font-semibold">{spot.label}</td>
-                      <td className="border border-stone-400 px-2 py-1">
+                      <td className="border border-slate-400 px-2 py-1 font-semibold">{spot.label}</td>
+                      <td className="border border-slate-400 px-2 py-1">
                         {booking?.contact.name ?? <em>libre</em>}
                       </td>
-                      <td className="border border-stone-400 px-2 py-1">
+                      <td className="border border-slate-400 px-2 py-1">
                         {booking ? formatPhone(booking.contact.phone) : ""}
                       </td>
-                      <td className="border border-stone-400 px-2 py-1">
+                      <td className="border border-slate-400 px-2 py-1">
                         {due > 0 ? formatEuros(due) : booking ? "payé" : ""}
                       </td>
-                      <td className="w-16 border border-stone-400 px-2 py-1">{booking ? "☐" : ""}</td>
+                      <td className="w-16 border border-slate-400 px-2 py-1">{booking ? "☐" : ""}</td>
                     </tr>
                   );
                 })}

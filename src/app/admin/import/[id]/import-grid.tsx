@@ -75,23 +75,23 @@ export function ImportGrid({
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-stone-200 bg-white">
+    <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
       <table className="w-full border-collapse text-sm">
-        <thead className="sticky top-0 z-10 bg-stone-50 text-left text-xs text-stone-500">
+        <thead className="sticky top-0 z-10 bg-slate-50 text-left text-xs text-slate-500">
           <tr>
-            <th className="w-8 border-b border-stone-200 px-2 py-2">#</th>
-            <th className="w-6 border-b border-stone-200" aria-label="Vérification" />
+            <th className="w-8 border-b border-slate-200 px-2 py-2">#</th>
+            <th className="w-6 border-b border-slate-200" aria-label="Vérification" />
             {COLUMNS.map((c, col) => (
               <Fragment key={c.field}>
-                <th className={`border-b border-stone-200 px-1.5 py-2 ${c.width}`} title={c.hint}>
+                <th className={`border-b border-slate-200 px-1.5 py-2 ${c.width}`} title={c.hint}>
                   {c.label}
                 </th>
                 {col === MATCH_AFTER && (
-                  <th className="min-w-52 border-b border-stone-200 px-1.5 py-2">Exposant</th>
+                  <th className="min-w-52 border-b border-slate-200 px-1.5 py-2">Exposant</th>
                 )}
               </Fragment>
             ))}
-            <th className="w-8 border-b border-stone-200" />
+            <th className="w-8 border-b border-slate-200" />
           </tr>
         </thead>
         <tbody>
@@ -104,12 +104,12 @@ export function ImportGrid({
             return (
               <tr
                 key={row.key}
-                className={`border-b border-stone-100 ${row.action === "skip" ? "opacity-50" : ""} ${
+                className={`border-b border-slate-100 ${row.action === "skip" ? "opacity-50" : ""} ${
                   fromActivePhoto ? "bg-blue-50/60" : ""
                 }`}
                 onFocus={() => onFocusRow(r)}
               >
-                <td className="px-2 text-xs whitespace-nowrap text-stone-400">
+                <td className="px-2 text-xs whitespace-nowrap text-slate-400">
                   {isTrailing ? "+" : r + 1}
                   {row.photoId !== null && <span title="Ligne lue sur une photo"> 📷</span>}
                 </td>
@@ -121,7 +121,7 @@ export function ImportGrid({
                     ) : warnings.length > 0 ? (
                       <span className="text-amber-600">⚠</span>
                     ) : row.action === "skip" ? (
-                      <span className="text-stone-400">–</span>
+                      <span className="text-slate-400">–</span>
                     ) : (
                       <span className="text-green-700">✓</span>
                     ))}
@@ -162,7 +162,7 @@ export function ImportGrid({
                     <button
                       type="button"
                       onClick={() => onDelete(r)}
-                      className="text-stone-400 hover:text-red-700"
+                      className="text-slate-400 hover:text-red-700"
                       aria-label={`Supprimer la ligne ${r + 1}`}
                     >
                       ×
@@ -189,7 +189,7 @@ function MatchSelect({
   disabled: boolean;
   onChange: (value: string) => void;
 }) {
-  if (!analysis) return <span className="text-xs text-stone-400">…</span>;
+  if (!analysis) return <span className="text-xs text-slate-400">…</span>;
   const value =
     row.action === "skip"
       ? "skip"
@@ -202,7 +202,7 @@ function MatchSelect({
       value={value}
       disabled={disabled}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full rounded border border-stone-200 bg-white px-1 py-1 text-xs"
+      className="w-full rounded border border-slate-200 bg-white px-1 py-1 text-xs"
     >
       <option value="new">Nouvel exposant</option>
       {analysis.candidates.map((c) => (

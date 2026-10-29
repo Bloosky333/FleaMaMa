@@ -83,7 +83,7 @@ export default async function SpotsPage({ searchParams }: PageProps<"/admin/empl
       </form>
       <Card className="overflow-x-auto p-0">
         <table className="w-full text-sm">
-          <thead className="border-b border-stone-200 bg-stone-50 text-left text-xs text-stone-500 uppercase">
+          <thead className="border-b border-slate-200 bg-slate-50 text-left text-xs text-slate-500 uppercase">
             <tr>
               <th className="px-4 py-2">N°</th>
               <th className="px-4 py-2">Rue</th>
@@ -94,9 +94,9 @@ export default async function SpotsPage({ searchParams }: PageProps<"/admin/empl
               <th className="px-4 py-2">Notes</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-stone-100">
+          <tbody className="divide-y divide-slate-100">
             {filtered.map((s) => (
-              <tr key={s.id} className={s.active ? "" : "text-stone-400"}>
+              <tr key={s.id} className={s.active ? "" : "text-slate-400"}>
                 <td className="px-4 py-2 font-semibold">
                   {s.label} {!s.active && <Badge>inactif</Badge>}
                 </td>
@@ -129,7 +129,7 @@ export default async function SpotsPage({ searchParams }: PageProps<"/admin/empl
             ))}
             {filtered.length === 0 && (
               <tr>
-                <td colSpan={7} className="px-4 py-8 text-center text-stone-500">
+                <td colSpan={7} className="px-4 py-8 text-center text-slate-500">
                   {rows.length === 0 ? (
                     <>
                       Aucun emplacement. Commencez par{" "}

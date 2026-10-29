@@ -44,7 +44,7 @@ export function OfferForm({
                     setKept((k) => (e.target.checked ? [...k, s.id] : k.filter((x) => x !== s.id)))
                   }
                 />
-                n°{s.label} {s.street && <span className="text-stone-500">— {s.street}</span>}
+                n°{s.label} {s.street && <span className="text-slate-500">— {s.street}</span>}
               </label>
             ))}
           </div>
@@ -59,7 +59,7 @@ export function OfferForm({
         </p>
       )}
 
-      <details className="rounded-md border border-stone-200 p-3">
+      <details className="rounded-md border border-slate-200 p-3">
         <summary className="cursor-pointer text-sm font-medium">Vérifier mes coordonnées</summary>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <Field label="Téléphone">

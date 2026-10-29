@@ -69,7 +69,7 @@ export default async function BookingPage({ params }: PageProps<"/admin/reservat
         <div className="space-y-6">
           <Card>
             <dl className="grid grid-cols-[auto_1fr] gap-x-6 gap-y-2 text-sm">
-              <dt className="text-stone-500">Exposant</dt>
+              <dt className="text-slate-500">Exposant</dt>
               <dd>
                 <Link
                   href={`/admin/exposants/${b.contact.id}`}
@@ -78,24 +78,24 @@ export default async function BookingPage({ params }: PageProps<"/admin/reservat
                   {displayName(b.contact)}
                 </Link>{" "}
                 {b.contact.kind === "pro" && <Badge tone="blue">Pro</Badge>}
-                <div className="text-stone-500">
+                <div className="text-slate-500">
                   {[formatPhone(b.contact.phone), b.contact.email].filter(Boolean).join(" · ")}
                 </div>
               </dd>
-              <dt className="text-stone-500">Emplacements</dt>
+              <dt className="text-slate-500">Emplacements</dt>
               <dd className="font-semibold">
                 {b.spots.length ? `n°${joinLabels(b.spots.map((s) => s.label))}` : "—"}{" "}
-                <span className="font-normal text-stone-500">{b.spots[0]?.street}</span>
+                <span className="font-normal text-slate-500">{b.spots[0]?.street}</span>
               </dd>
-              <dt className="text-stone-500">Montant</dt>
+              <dt className="text-slate-500">Montant</dt>
               <dd>{formatEuros(b.booking.amountDueCents)}</dd>
-              <dt className="text-stone-500">Paiement</dt>
+              <dt className="text-slate-500">Paiement</dt>
               <dd>
                 {paymentStateLabels[state]} — reçu {formatEuros(paid)}
               </dd>
               {b.booking.confirmedAt && (
                 <>
-                  <dt className="text-stone-500">Confirmée le</dt>
+                  <dt className="text-slate-500">Confirmée le</dt>
                   <dd>
                     {b.booking.confirmedAt.toLocaleDateString("fr-BE", { timeZone: "Europe/Brussels" })}
                   </dd>
@@ -103,7 +103,7 @@ export default async function BookingPage({ params }: PageProps<"/admin/reservat
               )}
               {b.booking.notes && (
                 <>
-                  <dt className="text-stone-500">Notes</dt>
+                  <dt className="text-slate-500">Notes</dt>
                   <dd className="whitespace-pre-line">{b.booking.notes}</dd>
                 </>
               )}
@@ -113,10 +113,10 @@ export default async function BookingPage({ params }: PageProps<"/admin/reservat
           <Card>
             <h2 className="mb-3 font-semibold">Paiements</h2>
             {pays.length === 0 ? (
-              <p className="mb-4 text-sm text-stone-500">Aucun paiement enregistré.</p>
+              <p className="mb-4 text-sm text-slate-500">Aucun paiement enregistré.</p>
             ) : (
               <table className="mb-4 w-full text-sm">
-                <tbody className="divide-y divide-stone-100">
+                <tbody className="divide-y divide-slate-100">
                   {pays.map((p) => (
                     <tr key={p.id}>
                       <td className="py-1.5 pr-3">{formatDateFr(p.paidAt)}</td>
@@ -125,7 +125,7 @@ export default async function BookingPage({ params }: PageProps<"/admin/reservat
                         {formatEuros(Math.abs(p.amountCents))}
                       </td>
                       <td className="py-1.5 pr-3">{methodLabels[p.method]}</td>
-                      <td className="py-1.5 pr-3 text-stone-500">
+                      <td className="py-1.5 pr-3 text-slate-500">
                         {[p.reference, p.recordedBy && `par ${p.recordedBy}`].filter(Boolean).join(" · ")}
                       </td>
                       <td className="py-1.5 text-right">
@@ -147,7 +147,7 @@ export default async function BookingPage({ params }: PageProps<"/admin/reservat
             <ActionForm
               action={addPayment.bind(null, id)}
               submitLabel="Enregistrer"
-              className="space-y-3 border-t border-stone-100 pt-4"
+              className="space-y-3 border-t border-slate-100 pt-4"
             >
               <div className="grid gap-3 sm:grid-cols-4">
                 <Field label="Type">
@@ -213,13 +213,13 @@ export default async function BookingPage({ params }: PageProps<"/admin/reservat
           <Card>
             <h2 className="mb-2 font-semibold">Emails</h2>
             {mails.length === 0 ? (
-              <p className="text-sm text-stone-500">Aucun email envoyé pour cette réservation.</p>
+              <p className="text-sm text-slate-500">Aucun email envoyé pour cette réservation.</p>
             ) : (
               <ul className="space-y-1 text-sm">
                 {mails.map((m, i) => (
                   <li key={i} className="flex justify-between gap-3">
                     <span>{TEMPLATE_INFO[m.template as TemplateKey]?.label ?? m.template}</span>
-                    <span className="text-stone-500">
+                    <span className="text-slate-500">
                       {m.status === "sent" ? `envoyé le ${m.sentAt?.toLocaleDateString("fr-BE")}` : m.status}
                     </span>
                   </li>

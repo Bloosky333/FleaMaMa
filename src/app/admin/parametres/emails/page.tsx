@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ActionForm } from "@/components/action-form";
 import { Badge, Card, Field, Input, PageHeader, Textarea } from "@/components/ui";
 import { db } from "@/db";
@@ -20,11 +19,6 @@ export default async function TemplatesPage() {
       <PageHeader
         title="Textes des emails"
         description="Les mots entre {{accolades}} sont remplacés automatiquement pour chaque exposant."
-        actions={
-          <Link href="/admin/parametres" className="text-brand-700 text-sm underline">
-            ← Paramètres
-          </Link>
-        }
       />
       <div className="grid gap-6 xl:grid-cols-[minmax(0,48rem)_1fr]">
         <div className="space-y-6">
@@ -35,7 +29,7 @@ export default async function TemplatesPage() {
                 <h2 className="font-semibold">
                   {TEMPLATE_INFO[key].label} {custom.has(key) && <Badge tone="blue">modifié</Badge>}
                 </h2>
-                <p className="mb-3 text-sm text-stone-600">{TEMPLATE_INFO[key].description}</p>
+                <p className="mb-3 text-sm text-slate-600">{TEMPLATE_INFO[key].description}</p>
                 <ActionForm action={saveTemplate.bind(null, key)} className="space-y-3">
                   <Field label="Sujet">
                     <Input name="subject" defaultValue={t.subject} />
@@ -46,7 +40,7 @@ export default async function TemplatesPage() {
                 </ActionForm>
                 {custom.has(key) && (
                   <form action={resetTemplate.bind(null, key)} className="mt-2">
-                    <button className="text-xs text-stone-500 underline">Revenir au texte d’origine</button>
+                    <button className="text-xs text-slate-500 underline">Revenir au texte d’origine</button>
                   </form>
                 )}
               </Card>
@@ -59,7 +53,7 @@ export default async function TemplatesPage() {
             {Object.entries(PLACEHOLDERS).map(([k, v]) => (
               <div key={k}>
                 <dt className="text-brand-700 inline font-mono text-xs">{`{{${k}}}`}</dt>{" "}
-                <dd className="inline text-stone-600">{v}</dd>
+                <dd className="inline text-slate-600">{v}</dd>
               </div>
             ))}
           </dl>

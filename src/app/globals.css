@@ -1,16 +1,29 @@
 @import "tailwindcss";
 
-@theme {
+@theme inline {
   --font-sans:
-    ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --color-brand-50: #eef7f3;
-  --color-brand-100: #d5ece2;
-  --color-brand-500: #2f8f6b;
-  --color-brand-600: #24755a;
-  --color-brand-700: #1d5e49;
+    var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-display: var(--font-bricolage), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* "Clair et minimal": white surfaces, slate neutrals, one blue accent. */
+@theme {
+  --color-brand-50: #eff6ff;
+  --color-brand-100: #dbeafe;
+  --color-brand-200: #bfdbfe;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+  --color-brand-800: #1e40af;
 }
 
 body {
-  background: var(--color-stone-50);
-  color: var(--color-stone-900);
+  background: var(--color-slate-50);
+  color: var(--color-slate-900);
+}
+
+/* Faint dot grid used behind hero cards. */
+.bg-dots {
+  background-image: radial-gradient(rgb(15 23 42 / 0.06) 1.2px, transparent 1.2px);
+  background-size: 18px 18px;
 }

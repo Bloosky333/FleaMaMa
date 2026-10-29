@@ -346,7 +346,7 @@ export default function PlanEditor({
           {modeButton("select", "Sélectionner / déplacer")}
           {modeButton("place", "Placer des numéros")}
           {modeButton("row", "Rangée")}
-          <span className="mx-1 h-6 w-px bg-stone-300" />
+          <span className="mx-1 h-6 w-px bg-slate-300" />
           <Button
             type="button"
             variant="secondary"
@@ -374,12 +374,12 @@ export default function PlanEditor({
               aria-label="Aller au numéro"
             />
           </form>
-          {busy && <span className="text-xs text-stone-500">Enregistrement…</span>}
+          {busy && <span className="text-xs text-slate-500">Enregistrement…</span>}
         </div>
         {error && <Alert>{error}</Alert>}
         <div
           ref={containerRef}
-          className={`h-[calc(100vh-13rem)] min-h-[420px] overflow-hidden rounded-lg border border-stone-300 bg-stone-200 ${
+          className={`h-[calc(100vh-13rem)] min-h-[420px] overflow-hidden rounded-lg border border-slate-300 bg-slate-200 ${
             mode === "select" ? "cursor-grab" : "cursor-crosshair"
           }`}
         >
@@ -512,7 +512,7 @@ export default function PlanEditor({
             </Stage>
           )}
         </div>
-        <p className="text-xs text-stone-500">
+        <p className="text-xs text-slate-500">
           {spots.length} emplacements · Molette : zoom · Glisser le fond : déplacer la vue · Maj+clic :
           sélection multiple · Suppr : supprimer · Échap : annuler
         </p>
@@ -520,26 +520,26 @@ export default function PlanEditor({
 
       <aside className="w-full shrink-0 space-y-4 lg:w-80">
         {mode === "place" && (
-          <div className="space-y-3 rounded-lg border border-stone-200 bg-white p-4">
+          <div className="space-y-3 rounded-lg border border-slate-200 bg-white p-4">
             <h3 className="text-sm font-semibold">Placer des numéros</h3>
-            <p className="text-sm text-stone-600">
+            <p className="text-sm text-slate-600">
               Cliquez sur le plan à l’endroit où est écrit le numéro ci-dessous. Le numéro suivant se remplit
               automatiquement.
             </p>
             <Field label="Prochain numéro">
               <Input value={nextLbl} onChange={(e) => setNextLbl(e.target.value)} />
             </Field>
-            <p className="text-xs text-stone-500">
+            <p className="text-xs text-slate-500">
               Les emplacements sont créés à la taille par défaut et avec l’orientation du dernier emplacement
               tourné ({Math.round(lastRotation)}°).
             </p>
           </div>
         )}
         {mode === "row" && (
-          <div className="space-y-3 rounded-lg border border-stone-200 bg-white p-4">
+          <div className="space-y-3 rounded-lg border border-slate-200 bg-white p-4">
             <h3 className="text-sm font-semibold">Rangée d’emplacements</h3>
             {!rowEnd ? (
-              <p className="text-sm text-stone-600">
+              <p className="text-sm text-slate-600">
                 {rowStart
                   ? "Cliquez maintenant sur la fin de la rangée."
                   : "Cliquez sur le début de la rangée (le long du trottoir), puis sur sa fin."}
@@ -581,7 +581,7 @@ export default function PlanEditor({
           </div>
         )}
         {selectedSpots.length === 1 && (
-          <div className="rounded-lg border border-stone-200 bg-white p-4">
+          <div className="rounded-lg border border-slate-200 bg-white p-4">
             <h3 className="mb-3 text-sm font-semibold">Emplacement n°{selectedSpots[0].label}</h3>
             <SingleSpotForm
               key={selectedSpots[0].id}
@@ -607,7 +607,7 @@ export default function PlanEditor({
           </div>
         )}
         {selectedSpots.length > 1 && (
-          <div className="rounded-lg border border-stone-200 bg-white p-4">
+          <div className="rounded-lg border border-slate-200 bg-white p-4">
             <MultiSpotForm
               key={selected.join(",")}
               spots={selectedSpots}
@@ -618,7 +618,7 @@ export default function PlanEditor({
           </div>
         )}
         {selectedSpots.length === 0 && mode === "select" && (
-          <div className="space-y-3 rounded-lg border border-stone-200 bg-white p-4 text-sm text-stone-600">
+          <div className="space-y-3 rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600">
             <p>
               <strong>Placer des numéros</strong> : le plus rapide si les numéros sont déjà écrits sur le
               plan.
@@ -630,7 +630,7 @@ export default function PlanEditor({
           </div>
         )}
         {selectedSpots.length === 0 && (
-          <div className="rounded-lg border border-stone-200 bg-white p-4">
+          <div className="rounded-lg border border-slate-200 bg-white p-4">
             <DefaultsForm
               key={`${plan.defaultSpotWidth}-${plan.defaultSpotHeight}-${plan.defaultSpotLengthM}`}
               plan={plan}
