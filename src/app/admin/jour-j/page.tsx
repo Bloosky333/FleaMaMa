@@ -51,13 +51,13 @@ export default async function MarketDayPage() {
       />
       <div className="mb-4 grid grid-cols-2 gap-3">
         <Card>
-          <div className="text-sm text-stone-500">Arrivés</div>
+          <div className="text-sm text-slate-500">Arrivés</div>
           <div className="text-2xl font-semibold">
             {present} / {rows.length}
           </div>
         </Card>
         <Card>
-          <div className="text-sm text-stone-500">Reste à encaisser</div>
+          <div className="text-sm text-slate-500">Reste à encaisser</div>
           <div className="text-2xl font-semibold">{formatEuros(due)}</div>
         </Card>
       </div>

@@ -44,7 +44,7 @@ export default async function SettingsPage({ searchParams }: PageProps<"/admin/p
           {!edition || edition.status === "closed" ? (
             <Card>
               <h2 className="mb-2 font-semibold">Préparer une nouvelle édition</h2>
-              <p className="mb-3 text-sm text-stone-600">
+              <p className="mb-3 text-sm text-slate-600">
                 Les prix et instructions de paiement de la dernière édition sont repris ; vous pourrez les
                 modifier.
               </p>
@@ -114,7 +114,7 @@ export default async function SettingsPage({ searchParams }: PageProps<"/admin/p
                   <h3 className="mb-2 text-sm font-semibold">Prix par emplacement (€)</h3>
                   <table className="text-sm">
                     <thead>
-                      <tr className="text-left text-xs text-stone-500">
+                      <tr className="text-left text-xs text-slate-500">
                         <th className="pr-4" />
                         <th className="pr-4 pb-1">Tarif réduit</th>
                         <th className="pb-1">Tarif normal</th>
@@ -163,7 +163,7 @@ export default async function SettingsPage({ searchParams }: PageProps<"/admin/p
             </Card>
           )}
           {all.length > 1 && (
-            <p className="text-sm text-stone-600">
+            <p className="text-sm text-slate-600">
               Autres éditions :{" "}
               {all
                 .filter((e) => e.id !== edition?.id)
@@ -240,7 +240,7 @@ export default async function SettingsPage({ searchParams }: PageProps<"/admin/p
                 </Field>
               </div>
             </ActionForm>
-            <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-stone-100 pt-4">
+            <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4">
               {settings.emailEnabled && (
                 <ActionForm
                   action={sendTestEmail}

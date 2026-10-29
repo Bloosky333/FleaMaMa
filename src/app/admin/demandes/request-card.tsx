@@ -36,10 +36,10 @@ export function RequestCard({ r }: { r: RequestCardData }) {
     });
 
   return (
-    <div className="rounded-lg border border-stone-200 bg-white p-4 text-sm">
+    <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm">
       <div className="mb-2 flex flex-wrap items-start justify-between gap-2">
         <div>
-          <span className="mr-2 text-xs text-stone-400">#{r.position}</span>
+          <span className="mr-2 text-xs text-slate-400">#{r.position}</span>
           <Link
             href={`/admin/exposants/${r.contact.id}`}
             className="text-brand-700 font-semibold hover:underline"
@@ -49,17 +49,17 @@ export function RequestCard({ r }: { r: RequestCardData }) {
           {r.contact.kind === "pro" && <Badge tone="blue">Pro</Badge>}{" "}
           {r.status === "waitlist" && <Badge tone="amber">Liste d’attente</Badge>}{" "}
           {r.alreadyBooked && <Badge tone="red">a déjà une réservation</Badge>}
-          <div className="text-xs text-stone-500">
+          <div className="text-xs text-slate-500">
             {[r.contact.city, formatPhone(r.contact.phone), r.contact.email].filter(Boolean).join(" · ")}
           </div>
         </div>
-        <div className="text-xs text-stone-500">
+        <div className="text-xs text-slate-500">
           {r.requestedAt &&
             `demandé le ${new Date(r.requestedAt).toLocaleString("fr-BE", { timeZone: "Europe/Brussels", dateStyle: "short", timeStyle: "short" })}`}
         </div>
       </div>
       {r.notes && (
-        <p className="mb-2 rounded bg-stone-50 p-2 text-xs whitespace-pre-line text-stone-700">{r.notes}</p>
+        <p className="mb-2 rounded bg-slate-50 p-2 text-xs whitespace-pre-line text-slate-700">{r.notes}</p>
       )}
       {error && <Alert>{error}</Alert>}
 
@@ -68,12 +68,12 @@ export function RequestCard({ r }: { r: RequestCardData }) {
           const allFree = c.spots.length > 0 && c.spots.every((s) => s.available);
           return (
             <li key={c.rank} className="flex flex-wrap items-center gap-2">
-              <span className="w-16 text-xs font-medium text-stone-500">{ordinal(c.rank)} choix</span>
+              <span className="w-16 text-xs font-medium text-slate-500">{ordinal(c.rank)} choix</span>
               {c.spots.map((s) => (
                 <span
                   key={s.id}
                   title={s.others.length ? `Aussi demandé par : ${s.others.join(", ")}` : undefined}
-                  className={`rounded px-2 py-0.5 text-xs font-semibold ${s.available ? "bg-green-100 text-green-800" : "bg-stone-200 text-stone-500 line-through"}`}
+                  className={`rounded px-2 py-0.5 text-xs font-semibold ${s.available ? "bg-green-100 text-green-800" : "bg-slate-200 text-slate-500 line-through"}`}
                 >
                   n°{s.label}
                   {s.others.length > 0 && s.available && (
@@ -136,7 +136,7 @@ export function RequestCard({ r }: { r: RequestCardData }) {
         </div>
       )}
 
-      <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-stone-100 pt-3">
+      <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-slate-100 pt-3">
         <Input
           value={manual}
           onChange={(e) => setManual(e.target.value)}
@@ -162,7 +162,7 @@ export function RequestCard({ r }: { r: RequestCardData }) {
         >
           Proposer (7 jours)
         </Button>
-        <span className="mx-1 h-5 w-px bg-stone-200" />
+        <span className="mx-1 h-5 w-px bg-slate-200" />
         {r.status === "requested" && (
           <Button
             type="button"

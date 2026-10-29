@@ -78,7 +78,7 @@ export function OffersTable({ offers, emailsEnabled }: { offers: OfferRow[]; ema
             key={k}
             type="button"
             onClick={() => setFilter(k)}
-            className={`rounded-full px-3 py-1 ${filter === k ? "bg-brand-600 text-white" : "bg-stone-100 text-stone-700"}`}
+            className={`rounded-full px-3 py-1 ${filter === k ? "bg-brand-600 text-white" : "bg-slate-100 text-slate-700"}`}
           >
             {label} (
             {
@@ -104,9 +104,9 @@ export function OffersTable({ offers, emailsEnabled }: { offers: OfferRow[]; ema
         )}
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-stone-200 bg-white">
+      <div className="overflow-x-auto rounded-lg border border-slate-200 bg-white">
         <table className="w-full text-sm">
-          <thead className="border-b border-stone-200 bg-stone-50 text-left text-xs text-stone-500 uppercase">
+          <thead className="border-b border-slate-200 bg-slate-50 text-left text-xs text-slate-500 uppercase">
             <tr>
               {emailsEnabled && (
                 <th className="px-3 py-2">
@@ -126,7 +126,7 @@ export function OffersTable({ offers, emailsEnabled }: { offers: OfferRow[]; ema
               <th className="px-3 py-2">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-stone-100">
+          <tbody className="divide-y divide-slate-100">
             {shown.map((o) => (
               <tr key={o.id} className="align-top">
                 {emailsEnabled && (
@@ -144,7 +144,7 @@ export function OffersTable({ offers, emailsEnabled }: { offers: OfferRow[]; ema
                 <td className="px-3 py-2 font-semibold whitespace-nowrap">
                   {o.spots.join(", ") || "—"}
                   {o.releasedSpots.length > 0 && (
-                    <div className="text-xs font-normal text-stone-400">
+                    <div className="text-xs font-normal text-slate-400">
                       libéré : {o.releasedSpots.join(", ")}
                     </div>
                   )}
@@ -156,12 +156,12 @@ export function OffersTable({ offers, emailsEnabled }: { offers: OfferRow[]; ema
                   >
                     {o.contact.name}
                   </Link>
-                  <div className="text-xs text-stone-500">
+                  <div className="text-xs text-slate-500">
                     {o.contact.email || <span className="text-amber-700">pas d’email</span>}
                     {o.contact.phone && ` · ${formatPhone(o.contact.phone)}`}
                   </div>
                   {o.notes && (
-                    <div className="mt-1 text-xs whitespace-pre-line text-stone-600">{o.notes}</div>
+                    <div className="mt-1 text-xs whitespace-pre-line text-slate-600">{o.notes}</div>
                   )}
                 </td>
                 <td className="px-3 py-2 text-xs">
@@ -172,7 +172,7 @@ export function OffersTable({ offers, emailsEnabled }: { offers: OfferRow[]; ema
                     {statusBadge[o.status]?.label ?? o.status}
                   </Badge>
                   {o.status === "offered" && o.offerExpiresAt && (
-                    <div className="text-xs text-stone-500">
+                    <div className="text-xs text-slate-500">
                       jusqu’au{" "}
                       {new Date(o.offerExpiresAt).toLocaleDateString("fr-BE", {
                         timeZone: "Europe/Brussels",
@@ -180,7 +180,7 @@ export function OffersTable({ offers, emailsEnabled }: { offers: OfferRow[]; ema
                     </div>
                   )}
                   {o.status === "confirmed" && (
-                    <div className="text-xs text-stone-500">{formatEuros(o.amountDueCents)}</div>
+                    <div className="text-xs text-slate-500">{formatEuros(o.amountDueCents)}</div>
                   )}
                 </td>
                 {emailsEnabled && (
@@ -188,9 +188,9 @@ export function OffersTable({ offers, emailsEnabled }: { offers: OfferRow[]; ema
                     {o.invitation ? (
                       invitationLabel[o.invitation]
                     ) : (
-                      <span className="text-stone-400">pas envoyée</span>
+                      <span className="text-slate-400">pas envoyée</span>
                     )}
-                    {o.reminders > 0 && <div className="text-stone-500">{o.reminders} rappel(s)</div>}
+                    {o.reminders > 0 && <div className="text-slate-500">{o.reminders} rappel(s)</div>}
                   </td>
                 )}
                 <td className="px-3 py-2">
@@ -213,7 +213,7 @@ export function OffersTable({ offers, emailsEnabled }: { offers: OfferRow[]; ema
                       </button>
                       <button
                         type="button"
-                        className="text-stone-700 underline"
+                        className="text-slate-700 underline"
                         disabled={pending}
                         onClick={() => {
                           if (
@@ -228,7 +228,7 @@ export function OffersTable({ offers, emailsEnabled }: { offers: OfferRow[]; ema
                       </button>
                       <button
                         type="button"
-                        className="text-stone-700 underline"
+                        className="text-slate-700 underline"
                         disabled={pending}
                         onClick={() => {
                           const date = window.prompt(
@@ -242,7 +242,7 @@ export function OffersTable({ offers, emailsEnabled }: { offers: OfferRow[]; ema
                       </button>
                       <button
                         type="button"
-                        className="text-stone-700 underline"
+                        className="text-slate-700 underline"
                         disabled={pending}
                         onClick={() =>
                           start(async () => {
@@ -271,7 +271,7 @@ export function OffersTable({ offers, emailsEnabled }: { offers: OfferRow[]; ema
                     </div>
                   )}
                   {link?.id === o.id && (
-                    <div className="mt-2 max-w-xs rounded bg-stone-100 p-2 text-xs break-all">
+                    <div className="mt-2 max-w-xs rounded bg-slate-100 p-2 text-xs break-all">
                       {link.url}
                       <button
                         type="button"
@@ -287,7 +287,7 @@ export function OffersTable({ offers, emailsEnabled }: { offers: OfferRow[]; ema
             ))}
             {shown.length === 0 && (
               <tr>
-                <td colSpan={emailsEnabled ? 7 : 5} className="px-3 py-6 text-center text-stone-500">
+                <td colSpan={emailsEnabled ? 7 : 5} className="px-3 py-6 text-center text-slate-500">
                   Aucune offre.
                 </td>
               </tr>

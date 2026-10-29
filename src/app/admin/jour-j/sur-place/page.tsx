@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Card, PageHeader } from "@/components/ui";
 import { requireUser } from "@/lib/auth";
@@ -19,14 +18,7 @@ export default async function WalkInPage() {
   const today = todayBrussels();
   return (
     <div className="mx-auto max-w-2xl">
-      <PageHeader
-        title="Exposant sur place"
-        actions={
-          <Link href="/admin/jour-j" className="text-brand-700 text-sm underline">
-            ← Jour J
-          </Link>
-        }
-      />
+      <PageHeader title="Exposant sur place" />
       <Card>
         <WalkInForm
           free={free}

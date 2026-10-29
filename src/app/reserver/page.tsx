@@ -21,7 +21,7 @@ export default async function PublicRequestPage() {
     <main className="mx-auto max-w-4xl px-4 py-8">
       <h1 className="text-2xl font-semibold">Brocante {edition?.year ?? ""}</h1>
       {edition?.marketDate && (
-        <p className="mb-6 text-stone-600">Le {formatDateFr(edition.marketDate, true)}.</p>
+        <p className="mb-6 text-slate-600">Le {formatDateFr(edition.marketDate, true)}.</p>
       )}
       {!edition || !open ? (
         <Card>
@@ -30,7 +30,7 @@ export default async function PublicRequestPage() {
               ? `Les réservations ouvriront le ${formatDateFr(edition.publicOpeningDate)}.`
               : "Les réservations ne sont pas ouvertes pour le moment."}
           </Alert>
-          <p className="mt-3 text-sm text-stone-600">
+          <p className="mt-3 text-sm text-slate-600">
             {settings.emailEnabled
               ? "Vous avez reçu un email avec un lien personnel ?"
               : "Vous avez reçu un lien personnel ?"}{" "}
@@ -49,7 +49,7 @@ export default async function PublicRequestPage() {
           emailsEnabled={settings.emailEnabled}
         />
       )}
-      <footer className="mt-10 flex justify-between text-xs text-stone-500">
+      <footer className="mt-10 flex justify-between text-xs text-slate-500">
         <span>{settings.organizerName}</span>
         <Link href="/admin" className="underline">
           Espace organisateurs

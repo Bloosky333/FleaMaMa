@@ -79,21 +79,21 @@ export function CheckInList({ rows }: { rows: CheckInRow[] }) {
             key={f}
             type="button"
             onClick={() => setFilter(f)}
-            className={`rounded-full px-3 py-1.5 text-sm ${filter === f ? "bg-brand-600 text-white" : "bg-stone-100 text-stone-700"}`}
+            className={`rounded-full px-3 py-1.5 text-sm ${filter === f ? "bg-brand-600 text-white" : "bg-slate-100 text-slate-700"}`}
           >
             {labels[f]} ({counts[f]})
           </button>
         ))}
       </div>
       {byStreet.length === 0 && (
-        <p className="py-6 text-center text-sm text-stone-500">Personne dans cette liste.</p>
+        <p className="py-6 text-center text-sm text-slate-500">Personne dans cette liste.</p>
       )}
       {byStreet.map(([street, list]) => (
         <section key={street}>
-          <h2 className="sticky top-0 z-10 bg-stone-50 py-1.5 text-sm font-semibold text-stone-600">
+          <h2 className="sticky top-0 z-10 bg-slate-50 py-1.5 text-sm font-semibold text-slate-600">
             {street}
           </h2>
-          <ul className="divide-y divide-stone-100 rounded-lg border border-stone-200 bg-white">
+          <ul className="divide-y divide-slate-100 rounded-lg border border-slate-200 bg-white">
             {list.map((r) => (
               <li
                 key={r.id}
@@ -103,7 +103,7 @@ export function CheckInList({ rows }: { rows: CheckInRow[] }) {
                   <div className="min-w-14 text-lg font-bold">{joinLabels(r.spots.map((s) => s.label))}</div>
                   <div className="min-w-0 flex-1">
                     <div className="truncate font-medium">{r.contact.name}</div>
-                    <div className="text-xs whitespace-nowrap text-stone-500">
+                    <div className="text-xs whitespace-nowrap text-slate-500">
                       {r.contact.phone && (
                         <a href={`tel:${r.contact.phone}`} className="underline">
                           {formatPhone(r.contact.phone)}
@@ -135,7 +135,7 @@ export function CheckInList({ rows }: { rows: CheckInRow[] }) {
                     onClick={() =>
                       start(() => setPresence(r.id, r.presence === "present" ? "unknown" : "present"))
                     }
-                    className={`rounded-md px-3 py-2 text-sm font-medium ${r.presence === "present" ? "bg-green-600 text-white" : "bg-stone-100 text-stone-700"}`}
+                    className={`rounded-md px-3 py-2 text-sm font-medium ${r.presence === "present" ? "bg-green-600 text-white" : "bg-slate-100 text-slate-700"}`}
                   >
                     ✓ Là
                   </button>
@@ -146,7 +146,7 @@ export function CheckInList({ rows }: { rows: CheckInRow[] }) {
                     onClick={() =>
                       start(() => setPresence(r.id, r.presence === "no_show" ? "unknown" : "no_show"))
                     }
-                    className={`rounded-md px-3 py-2 text-sm font-medium ${r.presence === "no_show" ? "bg-red-600 text-white" : "bg-stone-100 text-stone-700"}`}
+                    className={`rounded-md px-3 py-2 text-sm font-medium ${r.presence === "no_show" ? "bg-red-600 text-white" : "bg-slate-100 text-slate-700"}`}
                   >
                     ✗ Absent
                   </button>

@@ -99,7 +99,7 @@ export default async function ContactsPage({ searchParams }: PageProps<"/admin/e
       </form>
       <Card className="overflow-x-auto p-0">
         <table className="w-full text-sm">
-          <thead className="border-b border-stone-200 bg-stone-50 text-left text-xs text-stone-500 uppercase">
+          <thead className="border-b border-slate-200 bg-slate-50 text-left text-xs text-slate-500 uppercase">
             <tr>
               <th className="px-4 py-2">Nom</th>
               <th className="px-4 py-2">Localité</th>
@@ -109,9 +109,9 @@ export default async function ContactsPage({ searchParams }: PageProps<"/admin/e
               <th className="px-4 py-2">Riverain de</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-stone-100">
+          <tbody className="divide-y divide-slate-100">
             {rows.map((c) => (
-              <tr key={c.id} className="hover:bg-stone-50">
+              <tr key={c.id} className="hover:bg-slate-50">
                 <td className="px-4 py-2 font-medium">
                   <Link href={`/admin/exposants/${c.id}`} className="text-brand-700 hover:underline">
                     {displayName(c)}
@@ -128,7 +128,7 @@ export default async function ContactsPage({ searchParams }: PageProps<"/admin/e
             ))}
             {rows.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-4 py-8 text-center text-stone-500">
+                <td colSpan={6} className="px-4 py-8 text-center text-slate-500">
                   Aucun exposant{q && " ne correspond à cette recherche"}.
                 </td>
               </tr>

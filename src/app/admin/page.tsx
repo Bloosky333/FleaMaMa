@@ -77,9 +77,9 @@ export default async function Dashboard() {
       <div className="mb-6 grid gap-4 sm:grid-cols-3">
         {stats.map((s) => (
           <Card key={s.label}>
-            <div className="text-sm text-stone-500">{s.label}</div>
+            <div className="text-sm text-slate-500">{s.label}</div>
             <div className="text-3xl font-semibold">{s.value}</div>
-            <div className="text-xs text-stone-500">{s.sub}</div>
+            <div className="text-xs text-slate-500">{s.sub}</div>
           </Card>
         ))}
       </div>
@@ -90,21 +90,21 @@ export default async function Dashboard() {
             <li key={s.label} className="flex items-center gap-3 text-sm">
               <span
                 className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
-                  s.done ? "bg-brand-600 text-white" : "bg-stone-200 text-stone-600"
+                  s.done ? "bg-brand-600 text-white" : "bg-slate-200 text-slate-600"
                 }`}
               >
                 {s.done ? "✓" : i + 1}
               </span>
               <Link
                 href={s.href}
-                className={s.done ? "text-stone-500 line-through" : "text-brand-700 hover:underline"}
+                className={s.done ? "text-slate-500 line-through" : "text-brand-700 hover:underline"}
               >
                 {s.label}
               </Link>
             </li>
           ))}
         </ol>
-        <p className="mt-4 text-xs text-stone-500">
+        <p className="mt-4 text-xs text-slate-500">
           Prochaines étapes (en développement) : carte des réservations, paiements, demandes ouvertes à tous,
           jour J.
         </p>

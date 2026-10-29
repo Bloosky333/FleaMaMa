@@ -315,11 +315,11 @@ export function ImportWorkspace({
 
   return (
     <div className="space-y-4">
-      <section className="space-y-3 rounded-lg border border-stone-200 bg-white p-4">
+      <section className="space-y-3 rounded-lg border border-slate-200 bg-white p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="font-semibold">Photos de l’ancien logiciel</h2>
           <div className="flex flex-wrap items-center gap-2">
-            <label className="cursor-pointer rounded-md bg-white px-3 py-2 text-sm font-medium ring-1 ring-stone-300 hover:bg-stone-100">
+            <label className="cursor-pointer rounded-md bg-white px-3 py-2 text-sm font-medium ring-1 ring-slate-300 hover:bg-slate-100">
               Ajouter des photos
               <input
                 type="file"
@@ -346,7 +346,7 @@ export function ImportWorkspace({
           </Alert>
         )}
         {photos.length === 0 ? (
-          <p className="text-sm text-stone-600">
+          <p className="text-sm text-slate-600">
             Photographiez l’écran de FileMaker en mode liste (± 20 lignes par photo, bien droit, sans reflet).
             Les photos sont lues par une IA (Claude, Anthropic) puis vous vérifiez chaque ligne avant de
             valider.
@@ -357,7 +357,7 @@ export function ImportWorkspace({
               <li
                 key={p.id}
                 className={`w-36 rounded-md border p-1.5 text-xs ${
-                  activePhoto === p.id ? "border-blue-500 ring-2 ring-blue-200" : "border-stone-200"
+                  activePhoto === p.id ? "border-blue-500 ring-2 ring-blue-200" : "border-slate-200"
                 }`}
               >
                 <button
@@ -386,7 +386,7 @@ export function ImportWorkspace({
                     {aiEnabled && (
                       <button
                         type="button"
-                        className="text-brand-700 underline disabled:text-stone-400"
+                        className="text-brand-700 underline disabled:text-slate-400"
                         disabled={busyPhotos.has(p.id)}
                         onClick={() => extract(p.id)}
                       >
@@ -422,14 +422,14 @@ export function ImportWorkspace({
                 </button>
                 <button
                   type="button"
-                  className="text-stone-500 underline"
+                  className="text-slate-500 underline"
                   onClick={() => setActivePhoto(null)}
                 >
                   Fermer
                 </button>
               </span>
             </div>
-            <div className="max-h-[75vh] overflow-auto rounded-lg border border-stone-200 bg-stone-100">
+            <div className="max-h-[75vh] overflow-auto rounded-lg border border-slate-200 bg-slate-100">
               {/* eslint-disable-next-line @next/next/no-img-element -- authenticated API image */}
               <img
                 src={`/api/import/photo/${activePhotoInfo.id}`}
@@ -438,13 +438,13 @@ export function ImportWorkspace({
                 style={zoom ? { width: "200%" } : undefined}
               />
             </div>
-            <p className="mt-1 text-xs text-stone-500">
+            <p className="mt-1 text-xs text-slate-500">
               Les lignes lues sur cette photo sont surlignées en bleu.
             </p>
           </div>
         )}
         <div className="min-w-0 space-y-2">
-          <p className="text-xs text-stone-500">
+          <p className="text-xs text-slate-500">
             Tapez directement dans le tableau (Entrée : ligne suivante) ou collez des lignes copiées depuis
             Excel. Les cases jaunes sont celles que l’IA a eu du mal à lire. Tout est enregistré
             automatiquement.
@@ -464,7 +464,7 @@ export function ImportWorkspace({
             activePhotoId={activePhoto}
           />
           {problems.length > 0 && (
-            <ul className="space-y-0.5 rounded-lg border border-stone-200 bg-white p-3 text-sm">
+            <ul className="space-y-0.5 rounded-lg border border-slate-200 bg-white p-3 text-sm">
               {problems.slice(0, 50).map((p) => (
                 <li key={p.key}>
                   <button
@@ -484,17 +484,17 @@ export function ImportWorkspace({
         </div>
       </div>
 
-      <div className="sticky bottom-0 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-stone-200 bg-white/95 p-3 shadow-sm backdrop-blur">
+      <div className="sticky bottom-0 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white/95 p-3 shadow-sm backdrop-blur">
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
           <span>
             <strong>{stats.total}</strong> ligne(s)
           </span>
-          <span className={stats.errors ? "text-red-700" : "text-stone-500"}>{stats.errors} à corriger</span>
-          <span className={stats.warnings ? "text-amber-700" : "text-stone-500"}>
+          <span className={stats.errors ? "text-red-700" : "text-slate-500"}>{stats.errors} à corriger</span>
+          <span className={stats.warnings ? "text-amber-700" : "text-slate-500"}>
             {stats.warnings} à vérifier
           </span>
-          <span className="text-stone-500">{stats.existing} exposant(s) déjà connu(s)</span>
-          <span className="text-xs text-stone-400">
+          <span className="text-slate-500">{stats.existing} exposant(s) déjà connu(s)</span>
+          <span className="text-xs text-slate-400">
             {saveState === "saving"
               ? "Enregistrement…"
               : saveState === "dirty"

@@ -66,14 +66,14 @@ export default async function RequestsPage() {
       )}
       <h2 className="mb-3 font-semibold">À traiter ({pending.length})</h2>
       <div className="mb-8 space-y-3">
-        {pending.length === 0 && <p className="text-sm text-stone-500">Aucune demande en attente.</p>}
+        {pending.length === 0 && <p className="text-sm text-slate-500">Aucune demande en attente.</p>}
         {pending.map((r, i) => (
           <RequestCard key={r.id} r={toCard(r, i)} />
         ))}
       </div>
       <h2 className="mb-3 font-semibold">Liste d’attente ({waiting.length})</h2>
       <div className="space-y-3">
-        {waiting.length === 0 && <p className="text-sm text-stone-500">Personne en liste d’attente.</p>}
+        {waiting.length === 0 && <p className="text-sm text-slate-500">Personne en liste d’attente.</p>}
         {waiting.map((r, i) => (
           <RequestCard key={r.id} r={toCard(r, i)} />
         ))}

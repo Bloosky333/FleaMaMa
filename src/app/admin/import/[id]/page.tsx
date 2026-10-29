@@ -50,7 +50,7 @@ export default async function ImportBatchPage({ params, searchParams }: PageProp
             Import validé le {batch.committedAt?.toLocaleDateString("fr-BE")} : {bookingCount} réservation(s){" "}
             {batch.year} enregistrée(s), {contactCount} nouvel(s) exposant(s) créé(s).
           </Alert>
-          <p className="text-sm text-stone-600">
+          <p className="text-sm text-slate-600">
             Les exposants sont dans la liste{" "}
             <Link href="/admin/exposants" className="text-brand-700 underline">
               Exposants

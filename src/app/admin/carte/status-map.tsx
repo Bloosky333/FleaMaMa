@@ -147,8 +147,8 @@ export default function StatusMap({
             className="w-72"
             aria-label="Chercher sur la carte"
           />
-          {matches && <span className="text-sm text-stone-600">{matches.size} résultat(s)</span>}
-          <span className="mx-1 h-6 w-px bg-stone-300" />
+          {matches && <span className="text-sm text-slate-600">{matches.size} résultat(s)</span>}
+          <span className="mx-1 h-6 w-px bg-slate-300" />
           <Button
             type="button"
             variant="secondary"
@@ -190,7 +190,7 @@ export default function StatusMap({
                     return n;
                   })
                 }
-                className={`flex items-center gap-1.5 rounded-full border border-stone-200 bg-white px-2 py-1 ${off ? "opacity-40" : ""}`}
+                className={`flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2 py-1 ${off ? "opacity-40" : ""}`}
               >
                 <span
                   className="inline-block h-3 w-4 rounded-sm"
@@ -203,7 +203,7 @@ export default function StatusMap({
         </div>
         <div
           ref={containerRef}
-          className="relative h-[calc(100vh-15rem)] min-h-[420px] overflow-hidden rounded-lg border border-stone-300 bg-stone-200"
+          className="relative h-[calc(100vh-15rem)] min-h-[420px] overflow-hidden rounded-lg border border-slate-300 bg-slate-200"
         >
           {size.width > 0 && view && (
             <Stage
@@ -297,7 +297,7 @@ export default function StatusMap({
           )}
           {hover && (
             <div
-              className="pointer-events-none absolute z-10 max-w-xs rounded-md bg-stone-900/90 px-3 py-2 text-xs text-white shadow-lg"
+              className="pointer-events-none absolute z-10 max-w-xs rounded-md bg-slate-900/90 px-3 py-2 text-xs text-white shadow-lg"
               style={{
                 left: Math.min(hover.x + 14, size.width - 260),
                 top: Math.min(hover.y + 14, size.height - 120),
@@ -311,7 +311,7 @@ export default function StatusMap({
             </div>
           )}
         </div>
-        <p className="text-xs text-stone-500">
+        <p className="text-xs text-slate-500">
           Survolez un emplacement pour voir le détail · clic : sélectionner · Maj+clic : sélectionner
           plusieurs emplacements libres · cliquez la légende pour masquer une catégorie.
         </p>
@@ -345,7 +345,7 @@ function SpotPanel({
 
   if (!selected.length) {
     return (
-      <div className="rounded-lg border border-stone-200 bg-white p-4 text-sm text-stone-600">
+      <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-600">
         Cliquez sur un emplacement pour voir le détail, enregistrer un paiement ou l’attribuer.
       </div>
     );
@@ -356,12 +356,12 @@ function SpotPanel({
   const s = selected[0];
 
   return (
-    <div className="space-y-3 rounded-lg border border-stone-200 bg-white p-4 text-sm">
+    <div className="space-y-3 rounded-lg border border-slate-200 bg-white p-4 text-sm">
       {error && <Alert>{error}</Alert>}
       {single ? (
         <div className="space-y-0.5">
           {describe(s, previousYear).map((line, i) => (
-            <div key={i} className={i === 0 ? "text-base font-semibold" : "text-stone-700"}>
+            <div key={i} className={i === 0 ? "text-base font-semibold" : "text-slate-700"}>
               {line}
             </div>
           ))}
@@ -373,7 +373,7 @@ function SpotPanel({
       )}
 
       {single && s.booking && (
-        <div className="space-y-2 border-t border-stone-100 pt-3">
+        <div className="space-y-2 border-t border-slate-100 pt-3">
           <Link href={`/admin/reservations/${s.booking.id}`} className="text-brand-700 font-medium underline">
             Ouvrir la réservation {s.booking.reference}
           </Link>
@@ -409,7 +409,7 @@ function SpotPanel({
 
       {free && <AssignForm spots={selected} emailsEnabled={emailsEnabled} onDone={onDone} />}
       {!free && !single && (
-        <p className="text-stone-500">
+        <p className="text-slate-500">
           Pour attribuer plusieurs emplacements, sélectionnez uniquement des emplacements libres.
         </p>
       )}
@@ -436,7 +436,7 @@ function AssignForm({
   const withPriority = spots.filter((s) => s.status === "priority" || s.status === "conflict");
 
   return (
-    <div className="space-y-2 border-t border-stone-100 pt-3">
+    <div className="space-y-2 border-t border-slate-100 pt-3">
       <div className="font-medium">Attribuer à un exposant</div>
       {withPriority.length > 0 && (
         <Alert tone="amber">
@@ -445,7 +445,7 @@ function AssignForm({
       )}
       {error && <Alert>{error}</Alert>}
       {chosen ? (
-        <div className="flex items-center justify-between rounded-md bg-stone-100 px-2 py-1.5">
+        <div className="flex items-center justify-between rounded-md bg-slate-100 px-2 py-1.5">
           <span>{chosen.name}</span>
           <button type="button" className="text-xs underline" onClick={() => setChosen(null)}>
             changer
@@ -465,15 +465,15 @@ function AssignForm({
             }}
           />
           {results.length > 0 && (
-            <ul className="max-h-48 overflow-y-auto rounded-md border border-stone-200">
+            <ul className="max-h-48 overflow-y-auto rounded-md border border-slate-200">
               {results.map((r) => (
                 <li key={r.id}>
                   <button
                     type="button"
-                    className="block w-full px-2 py-1.5 text-left hover:bg-stone-100"
+                    className="block w-full px-2 py-1.5 text-left hover:bg-slate-100"
                     onClick={() => setChosen(r)}
                   >
-                    {r.name} {r.city && <span className="text-stone-500">({r.city})</span>}
+                    {r.name} {r.city && <span className="text-slate-500">({r.city})</span>}
                   </button>
                 </li>
               ))}

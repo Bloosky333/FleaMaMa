@@ -47,7 +47,7 @@ export default async function BookingsPage() {
             </LinkButton>
             <a
               href={`/api/export/reservations?edition=${edition.id}`}
-              className="inline-flex items-center rounded-md px-3 py-2 text-sm font-medium text-stone-700 ring-1 ring-stone-300 hover:bg-stone-100"
+              className="inline-flex items-center rounded-md px-3 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-300 hover:bg-slate-100"
             >
               Exporter (Excel)
             </a>
@@ -56,22 +56,22 @@ export default async function BookingsPage() {
       />
       <div className="mb-6 grid gap-4 sm:grid-cols-4">
         <Card>
-          <div className="text-sm text-stone-500">Confirmées</div>
+          <div className="text-sm text-slate-500">Confirmées</div>
           <div className="text-3xl font-semibold">{confirmed.length}</div>
-          <div className="text-xs text-stone-500">{spotsBooked} emplacement(s)</div>
+          <div className="text-xs text-slate-500">{spotsBooked} emplacement(s)</div>
         </Card>
         <Card>
-          <div className="text-sm text-stone-500">Attendu</div>
+          <div className="text-sm text-slate-500">Attendu</div>
           <div className="text-3xl font-semibold">{formatEuros(expected)}</div>
         </Card>
         <Card>
-          <div className="text-sm text-stone-500">Reçu</div>
+          <div className="text-sm text-slate-500">Reçu</div>
           <div className="text-3xl font-semibold">{formatEuros(received)}</div>
         </Card>
         <Card>
-          <div className="text-sm text-stone-500">À encaisser</div>
+          <div className="text-sm text-slate-500">À encaisser</div>
           <div className="text-3xl font-semibold">{toCollect}</div>
-          <div className="text-xs text-stone-500">réservation(s)</div>
+          <div className="text-xs text-slate-500">réservation(s)</div>
         </Card>
       </div>
       <BookingsTable

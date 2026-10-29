@@ -120,7 +120,7 @@ export default async function ContactPage({ params, searchParams }: PageProps<"/
         <div className="space-y-6">
           <Card>
             <h2 className="mb-1 font-semibold">Riverain</h2>
-            <p className="mb-3 text-sm text-stone-600">
+            <p className="mb-3 text-sm text-slate-600">
               Emplacements situés devant chez lui/elle : priorité chaque année, à son nom uniquement.
             </p>
             {links.length > 0 && (
@@ -128,7 +128,7 @@ export default async function ContactPage({ params, searchParams }: PageProps<"/
                 {links.map((l) => (
                   <li key={l.spotId} className="flex items-center justify-between gap-2 text-sm">
                     <span>
-                      n°{l.label} {l.street && <span className="text-stone-500">— {l.street}</span>}
+                      n°{l.label} {l.street && <span className="text-slate-500">— {l.street}</span>}
                     </span>
                     <form action={removeResidentLink.bind(null, contact.id, l.spotId)}>
                       <button className="text-xs text-red-700 underline">Retirer</button>
@@ -157,10 +157,10 @@ export default async function ContactPage({ params, searchParams }: PageProps<"/
           <Card>
             <h2 className="mb-3 font-semibold">Historique des réservations</h2>
             {history.length === 0 ? (
-              <p className="text-sm text-stone-500">Aucune réservation enregistrée.</p>
+              <p className="text-sm text-slate-500">Aucune réservation enregistrée.</p>
             ) : (
               <table className="w-full text-sm">
-                <tbody className="divide-y divide-stone-100">
+                <tbody className="divide-y divide-slate-100">
                   {history.map((b) => (
                     <tr key={b.id}>
                       <td className="py-1.5 pr-3 font-medium">
@@ -186,7 +186,7 @@ export default async function ContactPage({ params, searchParams }: PageProps<"/
           </Card>
           <Card>
             <h2 className="mb-2 font-semibold">Supprimer</h2>
-            <p className="mb-3 text-sm text-stone-600">
+            <p className="mb-3 text-sm text-slate-600">
               Possible uniquement si l’exposant n’a aucune réservation.
             </p>
             <form action={deleteContact.bind(null, contact.id)}>

@@ -66,20 +66,20 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
       <div className="space-y-4">
         <Alert tone="green">Votre réservation est confirmée. Merci !</Alert>
         <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
-          <dt className="text-stone-500">Emplacement{b.spots.length > 1 ? "s" : ""}</dt>
+          <dt className="text-slate-500">Emplacement{b.spots.length > 1 ? "s" : ""}</dt>
           <dd className="font-semibold">n°{labels}</dd>
-          <dt className="text-stone-500">Montant</dt>
+          <dt className="text-slate-500">Montant</dt>
           <dd className="font-semibold">{formatEuros(booking.amountDueCents)}</dd>
-          <dt className="text-stone-500">Référence</dt>
+          <dt className="text-slate-500">Référence</dt>
           <dd className="font-mono">{booking.reference}</dd>
         </dl>
         {edition.paymentInstructions && (
-          <p className="rounded-md bg-stone-100 p-3 text-sm whitespace-pre-line">
+          <p className="rounded-md bg-slate-100 p-3 text-sm whitespace-pre-line">
             {edition.paymentInstructions}
           </p>
         )}
         {settings.emailEnabled && (
-          <p className="text-sm text-stone-600">Une confirmation vous a aussi été envoyée par email.</p>
+          <p className="text-sm text-slate-600">Une confirmation vous a aussi été envoyée par email.</p>
         )}
       </div>
     );
@@ -102,10 +102,10 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
           <Alert tone="amber">Votre demande est en cours de traitement par l’organisateur.</Alert>
         )}
         <p className="text-sm">
-          <span className="text-stone-500">Votre demande :</span>{" "}
+          <span className="text-slate-500">Votre demande :</span>{" "}
           {requestSummary(choices.map((c) => c.spots.map((s) => s.label)))}
         </p>
-        <p className="text-sm text-stone-600">Gardez ce lien : il vous permet de suivre votre demande.</p>
+        <p className="text-sm text-slate-600">Gardez ce lien : il vous permet de suivre votre demande.</p>
         <form action={cancelMyRequest.bind(null, token)}>
           <button className="text-sm text-red-700 underline">Annuler ma demande</button>
         </form>
@@ -128,17 +128,17 @@ export default async function BookingPage({ params, searchParams }: PageProps<"/
 
   return (
     <main className="mx-auto max-w-xl px-4 py-8">
-      <p className="text-sm text-stone-500">Brocante {edition.year}</p>
+      <p className="text-sm text-slate-500">Brocante {edition.year}</p>
       <h1 className="mb-1 text-2xl font-semibold">
         Bonjour {contact.firstName || contact.lastName || contact.company}
       </h1>
       {edition.marketDate && (
-        <p className="mb-6 text-stone-600">
+        <p className="mb-6 text-slate-600">
           La brocante aura lieu le {formatDateFr(edition.marketDate, true)}.
         </p>
       )}
       <Card className="p-5">{content}</Card>
-      <p className="mt-6 text-center text-xs text-stone-500">{settings.organizerName}</p>
+      <p className="mt-6 text-center text-xs text-slate-500">{settings.organizerName}</p>
     </main>
   );
 }

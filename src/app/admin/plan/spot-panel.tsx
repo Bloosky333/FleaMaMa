@@ -145,7 +145,7 @@ export function MultiSpotForm({
         );
       }}
     >
-      <p className="text-sm text-stone-600">
+      <p className="text-sm text-slate-600">
         {spots.length} emplacements sélectionnés. Seuls les champs remplis seront modifiés.
       </p>
       <Field label="Rue">
@@ -159,7 +159,7 @@ export function MultiSpotForm({
       </Field>
       <Field label="État">
         <select
-          className="block w-full rounded-md border border-stone-300 px-3 py-2 text-sm"
+          className="block w-full rounded-md border border-slate-300 px-3 py-2 text-sm"
           value={active}
           onChange={(e) => setActive(e.target.value as "" | "on" | "off")}
         >

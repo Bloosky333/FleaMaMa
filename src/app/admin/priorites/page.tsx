@@ -102,9 +102,9 @@ export default async function PrioritiesPage({ searchParams }: PageProps<"/admin
           ["Confirmées", o.offers.filter((x) => x.status === "confirmed").length, "réservations"],
         ].map(([label, value, sub]) => (
           <Card key={label as string}>
-            <div className="text-sm text-stone-500">{label}</div>
+            <div className="text-sm text-slate-500">{label}</div>
             <div className="text-3xl font-semibold">{value}</div>
-            <div className="text-xs text-stone-500">{sub}</div>
+            <div className="text-xs text-slate-500">{sub}</div>
           </Card>
         ))}
       </div>
@@ -112,11 +112,11 @@ export default async function PrioritiesPage({ searchParams }: PageProps<"/admin
       {o.conflicts.length > 0 && (
         <Card className="mb-6">
           <h2 className="mb-1 font-semibold">Conflits à trancher</h2>
-          <p className="mb-3 text-sm text-stone-600">
+          <p className="mb-3 text-sm text-slate-600">
             Ces emplacements sont demandés par plusieurs personnes. Choisissez à qui proposer chaque
             emplacement.
           </p>
-          <ul className="divide-y divide-stone-100">
+          <ul className="divide-y divide-slate-100">
             {o.conflicts.map((c) => (
               <li key={c.spotId} className="flex flex-wrap items-start gap-4 py-3">
                 <div className="w-16 text-lg font-semibold">n°{c.label}</div>
@@ -125,7 +125,7 @@ export default async function PrioritiesPage({ searchParams }: PageProps<"/admin
                     <form
                       key={claim.contact.id}
                       action={settleConflict.bind(null, c.spotId, claim.contact.id, claim.reasons)}
-                      className="min-w-56 flex-1 rounded-md border border-stone-200 p-3 text-sm"
+                      className="min-w-56 flex-1 rounded-md border border-slate-200 p-3 text-sm"
                     >
                       <Link
                         href={`/admin/exposants/${claim.contact.id}`}
@@ -133,7 +133,7 @@ export default async function PrioritiesPage({ searchParams }: PageProps<"/admin
                       >
                         {claim.contact.name}
                       </Link>
-                      <div className="text-xs text-stone-600">
+                      <div className="text-xs text-slate-600">
                         {claim.reasons.map((r) => reasonLabels[r]).join(" + ")}
                       </div>
                       {claim.contact.warnings.length > 0 && (
@@ -156,7 +156,7 @@ export default async function PrioritiesPage({ searchParams }: PageProps<"/admin
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <div>
               <h2 className="font-semibold">Offres à préparer ({o.planned.length})</h2>
-              <p className="text-sm text-stone-600">
+              <p className="text-sm text-slate-600">
                 Calculées d’après l’édition {o.previousYear ?? "précédente"} et les riverains. Rien n’est
                 envoyé à cette étape.
               </p>
@@ -169,14 +169,14 @@ export default async function PrioritiesPage({ searchParams }: PageProps<"/admin
           </div>
           <div className="max-h-96 overflow-y-auto">
             <table className="w-full text-sm">
-              <tbody className="divide-y divide-stone-100">
+              <tbody className="divide-y divide-slate-100">
                 {o.planned.map((p) => (
                   <tr key={p.contact.id}>
                     <td className="py-1.5 pr-3 font-semibold whitespace-nowrap">
                       {p.spots.map((s) => s.label).join(", ")}
                     </td>
                     <td className="py-1.5 pr-3">{p.contact.name}</td>
-                    <td className="py-1.5 pr-3 text-xs text-stone-600">
+                    <td className="py-1.5 pr-3 text-xs text-slate-600">
                       {p.reasons.map((r) => reasonLabels[r]).join(" + ")}
                     </td>
                     <td className="py-1.5 text-xs text-amber-700">{p.contact.warnings.join(", ")}</td>
@@ -192,7 +192,7 @@ export default async function PrioritiesPage({ searchParams }: PageProps<"/admin
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <div>
             <h2 className="font-semibold">Offres {edition.year}</h2>
-            <p className="text-sm text-stone-600">
+            <p className="text-sm text-slate-600">
               {emailEnabled ? (
                 <>
                   Les invitations partent par petits lots via Gmail (voir{" "}
@@ -225,7 +225,7 @@ export default async function PrioritiesPage({ searchParams }: PageProps<"/admin
           )}
         </div>
         {o.offers.length === 0 ? (
-          <p className="text-sm text-stone-500">Aucune offre préparée pour l’instant.</p>
+          <p className="text-sm text-slate-500">Aucune offre préparée pour l’instant.</p>
         ) : (
           <OffersTable
             emailsEnabled={emailEnabled}
@@ -237,7 +237,7 @@ export default async function PrioritiesPage({ searchParams }: PageProps<"/admin
           />
         )}
       </Card>
-      <p className="mt-3 text-xs text-stone-500">
+      <p className="mt-3 text-xs text-slate-500">
         <Badge>Astuce</Badge> Pour un exposant sans email, utilisez « Lien » et envoyez-le par SMS, ou
         confirmez pour lui/elle après un appel.
       </p>
